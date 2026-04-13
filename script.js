@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const boutonsAjout = document.querySelectorAll('.btn-ajouter, .btn-add-cart');
     const compteurElement = document.getElementById('cart-counter');
 
+    console.log('Boutons trouvés:', boutonsAjout.length);
+    console.log('Toast element:', document.getElementById('toast'));
+
     // Récupération du jeton CSRF depuis la balise meta (à ajouter dans ton HTML)
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
@@ -10,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     boutonsAjout.forEach(bouton => {
         bouton.addEventListener('click', function(evenement) {
             evenement.preventDefault();
+            console.log('Bouton cliqué !');
 
             const idProduit = this.getAttribute('data-id');
             
@@ -29,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Réponse serveur:', data);
                 if (data.success) {
                     if (compteurElement) {
                         compteurElement.textContent = data.total;
@@ -88,15 +93,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- 4. FONCTION UTILITAIRE : TOAST ---
 function showToast(message, isError = false) {
+    console.log('showToast appelé:', message, isError);
     const toast = document.getElementById('toast');
-    if (!toast) return;
+    if (!toast) {
+        console.warn('❌ Toast element NOT found!');
+        return;
+    }
     
-    toast.textContent = message;
-    toast.style.background = isError ? 'rgba(100, 0, 0, 0.9)' : 'rgba(10, 10, 10, 0.9)';
-    toast.style.borderColor = isError ? '#ff4444' : 'var(--gold, #b59410)';
+    console.log('✅ Toast trouvé, affichage...');
+    const icon = isError ? '⚠️' : '✨';
+    toast.innerHTML = `<span class="toast-icon">${icon}</span>${message}`;
+    toast.style.background = isError ? 'rgba(200, 50, 50, 0.95)' : 'rgba(20, 20, 20, 0.98)';
+    toast.style.borderColor = isError ? '#ff6666' : '#D4AF37';
+    
+    // Force le bottom style directement !
+    toast.style.bottom = '30px';
+    toast.style.transition = 'bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
     toast.classList.add('show');
+    console.log('Toast bottom set to:', toast.style.bottom);
+    console.log('Toast classes:', toast.classList);
     
     setTimeout(() => {
+        toast.style.bottom = '-100px';
         toast.classList.remove('show');
     }, 3000);
 }

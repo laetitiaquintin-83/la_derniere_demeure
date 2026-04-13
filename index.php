@@ -48,10 +48,11 @@ $categories_db = $categories_avec_titre;
 <body>
     <header class="hero-section">
         <nav>
-            <a href="index.php" class="active">Accueil</a>
-            <a href="images/catalogue.php">Le Catalogue</a>
-            <a href="images/foret.php">Le Sanctuaire</a>
-            <a href="ceremonies.php">L'Art de l'Adieu</a>
+            <a href="index.php" class="active">🏠 Accueil</a>
+            <a href="images/catalogue.php">📜 Le Catalogue</a>
+            <a href="images/foret.php">🌿 Le Sanctuaire</a>
+            <a href="ceremonies.php">🕯️ L'Art de l'Adieu</a>
+            <a href="contact.php">📞 Conciergerie</a>
             
             <?php 
             // VÉRIFICATION ADMIN : Ces liens n'apparaîtront que si l'utilisateur est admin

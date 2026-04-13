@@ -81,12 +81,12 @@ if (!empty($panier_session)) {
 
     <header class="admin-nav">
         <nav>
-            <a href="index.php">Accueil</a>
-            <a href="images/catalogue.php">Le Catalogue</a>
-            <a href="images/foret.php">Le Sanctuaire</a>
-            <a href="admin.php">Le Registre</a>
-            <a href="gestion.php">L'Inventaire</a>
-            <a href="panier.php" style="margin-left: auto;" class="active">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="index.php">🏠 Accueil</a>
+            <a href="images/catalogue.php">📜 Le Catalogue</a>
+            <a href="images/foret.php">🌿 Le Sanctuaire</a>
+            <a href="ceremonies.php">🕯️ L'Art de l'Adieu</a>
+            <a href="contact.php">📞 Conciergerie</a>
+            <a href="panier.php" style="margin-left: auto;" class="active">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 

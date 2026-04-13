@@ -81,12 +81,12 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 20;">
         <nav>
-            <a href="../index.php">🏠 Accueil</a>
-            <a href="catalogue.php">📜 Le Catalogue</a>
-            <a href="foret.php" class="active" style="color: #D4AF37;">🌿 Le Sanctuaire</a>
-            <a href="../ceremonies.php">🕯️ L'Art de l'Adieu</a>
-            <a href="../contact.php">📞 Conciergerie</a>
-            <a href="../panier.php" style="margin-left: auto;">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="../index.php">Accueil</a>
+            <a href="catalogue.php">Le Catalogue</a>
+            <a href="foret.php" class="active" style="color: #D4AF37;">Le Sanctuaire</a>
+            <a href="../ceremonies.php">L'Art de l'Adieu</a>
+            <a href="../contact.php">Conciergerie</a>
+            <a href="../panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 

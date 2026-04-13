@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Conciergerie | La Dernière Demeure</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Styles spécifiques pour le formulaire de luxe */
         .contact-section {
@@ -122,12 +123,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
-            <a href="index.php">Accueil</a>
-            <a href="index.php#catalogue">Le Catalogue</a>
-            <a href="images/foret.php">Le Sanctuaire</a>
-            <a href="ceremonies.php">L'Art de l'Adieu</a>
-            <a href="admin.php">Le Registre</a>
-            <a href="gestion.php">L'Inventaire</a>
+            <a href="index.php">🏠 Accueil</a>
+            <a href="images/catalogue.php">📜 Le Catalogue</a>
+            <a href="images/foret.php">🌿 Le Sanctuaire</a>
+            <a href="ceremonies.php">🕯️ L'Art de l'Adieu</a>
+            <a href="contact.php" class="active" style="color: #D4AF37;">📞 Conciergerie</a>
             <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
             <?php if(isset($_SESSION['user_id'])): ?>
                 <a href="logout.php" class="lock-link">🔓 Quitter</a>

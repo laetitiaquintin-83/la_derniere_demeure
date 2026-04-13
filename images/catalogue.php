@@ -50,12 +50,12 @@ $categories_db = $categories_avec_titre;
 <body class="admin-body"> 
     <header class="admin-nav">
         <nav>
-            <a href="../index.php">Accueil</a>
-            <a href="catalogue.php" class="active">Le Catalogue</a>
-            <a href="foret.php">Le Sanctuaire</a>
-            <a href="../admin.php">Le Registre</a>
-            <a href="../gestion.php">L'Inventaire</a>
-            <a href="../panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="../index.php">🏠 Accueil</a>
+            <a href="catalogue.php" class="active">📜 Le Catalogue</a>
+            <a href="foret.php">🌿 Le Sanctuaire</a>
+            <a href="../ceremonies.php">🕯️ L'Art de l'Adieu</a>
+            <a href="../contact.php">📞 Conciergerie</a>
+            <a href="../panier.php" style="margin-left: auto;">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 
