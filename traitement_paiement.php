@@ -45,7 +45,7 @@ try {
             // Si rowCount est à 0, c'est que la condition "stock >= ?" a bloqué la mise à jour !
             if ($stmt->rowCount() === 0) {
                 // On déclenche volontairement une exception pour arrêter le processus
-                throw new Exception("L'une des reliques n'est plus disponible en quantité suffisante.");
+                throw new Exception("stock_insuffisant");
             }
         }
     }
@@ -65,8 +65,110 @@ try {
     }
     
     error_log("Erreur de commande : " . $e->getMessage());
-    // On affiche un message d'erreur et on arrête l'exécution
-    die("Une perturbation occulte a annulé la transaction : " . htmlspecialchars($e->getMessage()));
+    
+    // Déterminer le type d'erreur
+    $error_code = $e->getMessage();
+    $error_title = "L'Adieu n'a pu se conclure";
+    $error_message = "Une perturbation éthérée a empêché votre offrande.";
+    
+    if ($error_code === 'stock_insuffisant') {
+        $error_message = "L'une de vos reliques a été réclamée par un autre fidèle. Notre inventaire a été mis à jour.";
+    }
+    
+    // Afficher la page d'erreur élégante
+    ?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($error_title); ?> | La Dernière Demeure</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+            padding: 20px;
+        }
+        .error-box {
+            text-align: center;
+            max-width: 600px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid #D4AF37;
+            border-radius: 10px;
+            padding: 60px 40px;
+            box-shadow: 0 15px 60px rgba(212, 175, 55, 0.2);
+        }
+        .error-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .error-title {
+            color: #D4AF37;
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #b3b3b3;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        .error-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-error {
+            padding: 12px 30px;
+            border: 1px solid #D4AF37;
+            background: transparent;
+            color: #D4AF37;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.95em;
+            letter-spacing: 1px;
+        }
+        .btn-error:hover {
+            background: #D4AF37;
+            color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-box">
+            <div class="error-icon">⚰️</div>
+            <h1 class="error-title"><?php echo htmlspecialchars($error_title); ?></h1>
+            <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
+            <div class="error-actions">
+                <a href="panier.php" class="btn-error">↻ Retour au Panier</a>
+                <a href="index.php" class="btn-error">🏠 Retour à l'Accueil</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    <?php
+    exit;
 }
 ?>
 <!DOCTYPE html>
