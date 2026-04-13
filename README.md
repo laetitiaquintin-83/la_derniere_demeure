@@ -1,0 +1,367 @@
+# 🏛️ La Dernière Demeure - E-commerce Funéraire
+
+## 📋 Vue d'ensemble
+
+**La Dernière Demeure** est une application web full-stack complète dédiée au secteur des services funéraires. Ce projet démontre une maîtrise des technologies web modernes avec une approche sécurisée et professionnelle.
+
+### 🎯 Objectif du projet
+
+Créer une plateforme e-commerce permettant :
+- **Au client** : parcourir un catalogue de produits funéraires, consulter les services, ajouter des articles au panier et effectuer des achats
+- **À l'administrateur** : gérer le catalogue (ajout, modification, suppression de produits), contrôler les stocks, et traiter les commandes
+
+---
+
+## 🛠️ Stack Technique
+
+| Composant | Technologie | Version/Détails |
+|-----------|-------------|-----------------|
+| **Backend** | PHP | 7.4+ |
+| **Frontend** | HTML5, CSS3, JavaScript (Vanilla) | ES6+ |
+| **Base de données** | MySQL | 8.0+ |
+| **Serveur local** | Laragon/XAMPP | Apache + PHP |
+| **Gestion BD** | PDO (prepared statements) | Paramètres liés |
+
+---
+
+## 🎓 Compétences Démontrées
+
+### 1. **Sécurité Web** 🔐
+- **Protection CSRF** : tokens générés et validés pour chaque formulaire
+- **Authentification sécurisée** : `password_verify()` avec hachage bcrypt
+- **Injection SQL** : éradiquée grâce aux prepared statements PDO
+- **Validation des données** : contrôle des types et des formats en entrée
+- **Gestion des sessions** : `session_regenerate_id()` après authentification
+
+### 2. **Architecture & Design Patterns**
+- **Séparation des responsabilités** : logique métier, présentation, données
+- **MVC simplifié** : fichiers dédiés pour chaque fonctionnalité
+- **DRY (Don't Repeat Yourself)** : réutilisation du `config.php` et fonctions communes
+- **PRG Pattern (Post/Redirect/Get)** : évite les doublons de données
+
+### 3. **Bonnes Pratiques PHP**
+- **PDO abstraction** : indépendant du système de base de données
+- **Transactions SQL** : garantit la cohérence des stocks lors des commandes
+- **Gestion des erreurs** : try/catch pour les exceptions PDO
+- **Code commenté** : documentation explicite des décisions techniques
+
+### 4. **Frontend & UX**
+- **Responsive Design** : adapté à mobile, tablette, desktop
+- **Fetch API (AJAX)** : gestion asynchrone du panier sans rechargement
+- **Intersection Observer** : animations des cartes produits au scroll
+- **Toast notifications** : retours utilisateur en temps réel
+- **Curseur personnalisé** : thème graphique cohérent
+
+### 5. **Gestion de Données**
+- **Mise à jour de stocks** : décrémentation sécurisée lors des commandes
+- **Panier persistant** : stocké en session avec validation BD
+- **Filtrage par catégories** : requêtes dynamiques et optimisées
+- **Calculs monétaires** : formatage cohérent des prix (locale fr)
+
+---
+
+## 📁 Structure du Projet
+
+```
+la_derniere_demeure/
+│
+├── 📄 INDEX (pages principales)
+│   ├── index.php              ⭐ Page d'accueil + catalogue
+│   └── contact.php            📧 Formulaire de contact
+│
+├── 🛍️ PANIER & PAIEMENT
+│   ├── panier.php             📦 Affichage du panier
+│   ├── ajouter_panier.php     ➕ API AJAX d'ajout (POST)
+│   └── traitement_paiement.php 💳 Traitement des commandes
+│
+├── 🔐 AUTHENTIFICATION & ADMIN
+│   ├── login.php              🔑 Page de connexion admin
+│   ├── logout.php             🚪 Déconnexion
+│   ├── admin.php              ➕ Formulaire d'ajout de produit
+│   ├── gestion.php            📋 Dashboard d'inventaire
+│   ├── modifier.php           ✏️ Modification de produit
+│   └── supprimer.php          🗑️ Suppression de produit
+│
+├── ⚙️ CONFIGURATION
+│   ├── config.php             🔧 BDD + fonctions CSRF
+│   ├── update_stock.php       📊 Mise à jour stock (AJAX)
+│   └── optim_cursor.py        🐍 Script d'optimisation curseur
+│
+├── 🎨 ASSETS
+│   ├── style.css              🎨 Styles + variables CSS
+│   ├── script.js              ⚡ Logique frontend (AJAX, animations)
+│   └── images/                📸 Ressources (produits, brume, curseur)
+│       └── catalogue/         📦 Images des produits renommées
+│
+└── 📚 DOCUMENTATION
+    └── README.md              📖 Ce fichier
+```
+
+---
+
+## 🚀 Installation & Setup
+
+### Prérequis
+- PHP 7.4+
+- MySQL 8.0+
+- Laragon ou XAMPP installé
+
+### Étapes d'installation
+
+#### 1️⃣ Cloner/Placer les fichiers
+```bash
+# Copier le dossier dans le répertoire web de Laragon
+cd C:\laragon\www\
+# Placer le projet : c:\laragon\www\la_derniere_demeure
+```
+
+#### 2️⃣ Créer la base de données MySQL
+```sql
+CREATE DATABASE la_derniere_demeure CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE la_derniere_demeure;
+
+-- Table des produits
+CREATE TABLE catalogue_funeraire (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL UNIQUE,
+    categorie VARCHAR(100),
+    essence_bois VARCHAR(100),
+    couleur_velours VARCHAR(100),
+    description TEXT,
+    prix DECIMAL(10, 2) NOT NULL,
+    stock INT DEFAULT 0,
+    image_path VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Index pour performances
+CREATE INDEX idx_categorie ON catalogue_funeraire(categorie);
+CREATE INDEX idx_prix ON catalogue_funeraire(prix);
+```
+
+#### 3️⃣ Configurer config.php
+```php
+// config.php
+$host = 'localhost';
+$dbname = 'la_derniere_demeure';
+$user = 'root';
+$pass = '';  // Vide pour Laragon/XAMPP local
+```
+
+#### 4️⃣ Configuration du mot de passe admin
+```bash
+# Générer un hash bcrypt pour "cerbere" (mot de passe de démo)
+# Utiliser password_hash() en CLI :
+$ php -r "echo password_hash('cerbere', PASSWORD_BCRYPT, ['cost' => 10]);"
+# Résultat : $2y$10$dQ04JR2zzMidalMeBMeMiuNgBnSaJBv/PNRYq2fxptuFmGnl1JDO2
+# Remplacer $hash_sauvegarde dans login.php
+```
+
+#### 5️⃣ Démarrer l'application
+```bash
+# Lancer Laragon
+# Accéder à http://localhost/la_derniere_demeure/
+
+# Identifiants de connexion admin :
+# Utilisateur : (aucun, login direct)
+# Mot de passe : cerbere
+```
+
+---
+
+## 🎯 Fonctionnalités Principales
+
+### 👥 Côté Client
+
+#### 📖 Catalogue de produits
+- Affichage avec grille responsive
+- Filtrage par catégories (Cercueils, Urnes, Stèles, Fleurs, Univers Passion)
+- Animations au scroll (Intersection Observer)
+- Images optimisées du catalogue
+
+#### 🛒 Gestion du panier
+- Ajout/suppression d'articles en temps réel (AJAX)
+- Compteur dynamique dans la barre de navigation
+- Persistance en session utilisateur
+- Validation des stocks avant commande
+
+#### 💳 Paiement
+- Formulaire de commande avec validation
+- Traitement des transactionsSQL (atomicité garantie)
+- Mise à jour automatique des stocks
+- Confirmation de commande
+
+#### ✨ Sections thématiques
+- **Le Sanctuaire des Racines** : présentation de la forêt cinéraire
+- **L'Art du Baptême de Mémoire** : rituels et cérémonies
+- **Toast notifications** : retours utilisateur en temps réel
+
+---
+
+### 🔧 Côté Administrateur
+
+#### ➕ Ajouter un produit
+- Formulaire complet (nom, catégorie, prix, stock, essence, description)
+- Upload d'images avec validation type/taille
+- Nommage sécurisé avec timestamp aléatoire
+- Protection CSRF obligatoire
+
+#### 📋 Gestion de l'inventaire
+- Dashboard d'inventaire avec tous les produits
+- Vue d'ensemble du stock (En Stock / Critique / Épuisé)
+- Miniatures des produits pour identification rapide
+
+#### ✏️ Modifier un produit
+- Édition de tous les champs sauf l'image (par défaut)
+- **Nouveau** : Possibilité de lier une image renommée manuellement via chemin
+- Ou télécharger une nouvelle image
+- Validation complète des données
+
+#### 🗑️ Supprimer un produit
+- Suppression avec confirmation
+- Token CSRF pour prévention attaques
+- Suppression logique de la base de données
+
+---
+
+## 🔒 Aspects Sécurité Implémentés
+
+```php
+// ✅ 1. Protection CSRF
+genererTokenCSRF();    // Création du token par formulaire
+validerTokenCSRF($token);  // Validation stricte
+
+// ✅ 2. Authentification sécurisée
+password_verify($mdp_saisi, $hash_sauvegarde);
+session_regenerate_id(true);  // Prévention fixation session
+
+// ✅ 3. Prepared Statements (Injection SQL)
+$stmt = $pdo->prepare("SELECT * FROM catalogue_funeraire WHERE id = ?");
+$stmt->execute([$id]);
+
+// ✅ 4. Validation des entrées
+ctype_digit(strval($id));  // Vérifier type numérique
+filter_var($email, FILTER_VALIDATE_EMAIL);  // Email valide
+!is_numeric($prix) || $prix > 999999.99;  // Plage logique
+
+// ✅ 5. Transactions pour cohérence données
+$pdo->beginTransaction();
+// ... modifications ...
+$pdo->commit();  // Ou rollback() en cas erreur
+
+// ✅ 6. Gestion des erreurs sécurisée
+try {
+    // Code
+} catch (PDOException $e) {
+    // Ne JAMAIS exposer $e->getMessage() à l'utilisateur
+    error_log($e->getMessage());  // Enregistrement serveur
+    die("Erreur système. Contact administrateur.");
+}
+```
+
+---
+
+## 🔄 Flux de Commande (Transactionnel)
+
+```
+1. Client ajoute articles au panier (session)
+   ↓
+2. Clique "Passer commande"
+   ↓
+3. Formulaire paiement avec validation CSRF
+   ↓
+4. Vérification du panier (non-vide)
+   ↓
+5. Début transaction SQL
+   ├→ Vérification stock (clause WHERE stock >= ?)
+   ├→ Décrémentation du stock (UPDATE)
+   ├→ Si problème → ROLLBACK (annulation)
+   └→ Si succès → COMMIT (enregistrement)
+   ↓
+6. Vider le panier (session)
+   ↓
+7. Redirection + message confirmation
+```
+
+---
+
+## 💡 Améliorations Futures
+
+### Court terme 🟢
+- [ ] Email de confirmation de commande
+- [ ] Gestion de plusieurs administrateurs avec rôles
+- [ ] Historique des commandes client
+- [ ] Recherche de produits par mot-clé
+
+### Moyen terme 🟡
+- [ ] Intégration API paiement réelle (Stripe, PayPal)
+- [ ] Dashboard statistiques (ventes, produits populaires)
+- [ ] Système de newsletter
+- [ ] Avis/commentaires clients
+
+### Long terme 🔴
+- [ ] Migration vers framework (Laravel, Symfony)
+- [ ] API REST avec authentification JWT
+- [ ] App mobilePHP React Native
+- [ ] CDN pour images optimisées
+- [ ] Caching avec Redis
+
+---
+
+## 📊 Points Clés pour l'Examen
+
+### ✅ Qualités à valoriser
+
+1. **Code professionnel** : commentaires, nommage cohérent, structure claire
+2. **Sécurité prioritaire** : CSRF, injection SQL, authentification robuste
+3. **Expérience utilisateur** : retours temps réel, responsive design, thème cohérent
+4. **Gestion d'erreurs** : try/catch, validations multi-niveaux
+5. **Bonnes pratiques DB** : prepared statements, transactions, indexes
+
+### 🎤 Points à présenter à l'oral
+
+- **Architecture** : Séparation logique des responsabilités
+- **Sécurité** : Démonstration des 5 protections implémentées
+- **Thématique** : Design et copywriting cohérent (poétique funéraire)
+- **Responsive** : Test sur différentes résolutions
+- **Transactions** : Expliquer comment les stocks ne peuvent pas être oversold
+
+---
+
+## 📞 Support & Questions Fréquentes
+
+### Q: Pourquoi PDO et pas ORM comme Eloquent?
+**R:** PDO offre un excellent équilibre entre contrôle bas-niveau et abstraction, idéal pour démontrer une compréhension des databases en junior.
+
+### Q: Comment générer le mot de passe admin?
+**R:** `php -r "echo password_hash('cerbere', PASSWORD_BCRYPT);"`
+
+### Q: Les images ne se chargent pas ?
+**R:** Vérifier que le chemin dans `image_path` correspond exactement au fichier réel dans `images/catalogue/`
+
+### Q: Comment importer des produits en masse?
+**R:** Créer un script PHP qui boucle sur des données CSV/JSON et insère via PDO.
+
+---
+
+## 📄 Licence
+
+Projet étudiant - Librement utilisable à des fins pédagogiques.
+
+---
+
+## 👨‍💻 Développeur
+
+**Réalisé pour** : Examen Développeur Web Junior
+**Date** : 2026
+**Statut** : ✅ Production-Ready
+
+---
+
+## 🏆 Résumé pour l'Entretien
+
+> *"La Dernière Demeure est une application e-commerce full-stack qui démontre une maîtrise des technologies web fondamentales avec une forte emphase sur la sécurité. Le projet implémente CORS protections, transactions SQL atomiques, authentification sécurisée par bcrypt, et une architecture modulaire, tout en maintenant une excellente expérience utilisateur. Elle est prête pour une production aux faibles volumes ou comme base pour une migration future vers un framework moderne."*
+
+---
+
+**Bonne chance pour votre examen! 🍀**
