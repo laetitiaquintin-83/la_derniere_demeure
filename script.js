@@ -52,19 +52,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 2. ANIMATION DES CARTES (INTERSECTION OBSERVER) ---
-    const cards = document.querySelectorAll('.produit-card');
-    if (cards.length > 0) {
-        const observer = new IntersectionObserver((entries) => {
+    // --- 2. ANIMATION DES ÉLÉMENTS (INTERSECTION OBSERVER) ---
+    // Cherche tous les éléments qui pourraient avoir besoin d'animation
+    const elementsToReveal = document.querySelectorAll(
+        '.produit-card, .forest-content, .forest-text, .forest-image-box, ' +
+        '.foret-split, .foret-text, .foret-image, ' +
+        'h2.section-title, h2.cinzel-title, ' +
+        '.ceremony, .ritual, [class*="section"]'
+    );
+    console.log('🎬 Éléments trouvés pour animation:', elementsToReveal.length);
+    console.log('🎬 Page actuelle:', window.location.pathname);
+    
+    if (elementsToReveal.length > 0) {
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal-visible');
-                    observer.unobserve(entry.target);
+                    console.log('✨ Élément visible, ajout de la classe visible');
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.15 });
 
-        cards.forEach(card => observer.observe(card));
+        elementsToReveal.forEach(el => {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        });
+    } else {
+        console.warn('⚠️ Aucun élément trouvé pour l\'animation');
     }
 
     // --- 3. BOUTON SCROLL TO TOP ---

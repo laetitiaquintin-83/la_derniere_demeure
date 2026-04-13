@@ -782,3 +782,23 @@ body.admin-body {
         bottom: 20px !important;
     }
 }
+/* État initial : invisible et plus bas + rotation légère */
+.reveal {
+    opacity: 0;
+    transform: translateY(80px) scale(0.95) rotateX(-15deg);
+    transition: all 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-delay: 0.15s; /* Un petit délai pour le côté mystique */
+    perspective: 1000px;
+}
+
+/* État final : visible et à sa place */
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+}
+
+/* On ralentit un peu plus l'image pour un effet de poids */
+.forest-image-box.reveal, .foret-image.reveal {
+    transition-duration: 2s;
+    transition-delay: 0.3s;
+}
