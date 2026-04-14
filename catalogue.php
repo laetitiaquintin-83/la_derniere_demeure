@@ -19,10 +19,10 @@ $titres_poetiques = [
     'Urnes'                => 'Le Souffle des Anciens',
     'Stèle'                => "Les Gardiens de l'Éternité",
     'Stèles'               => "Les Gardiens de l'Éternité",
-    'Reliquaires & Stèles' => "Les Gardiens de l'Éternité",
     'Fleurs'               => "L'Offrande Éternelle",
     'Hommages Floraux'     => "L'Offrande Éternelle",
-    'Univers Passion'      => "L'Écho d'une Vie"
+    'Univers Passion'      => "L'Écho d'une Vie",
+    'Animaux'              => "Le Repos des Fidèles"
 ];
 
 // Dédupliquer les catégories qui partagent le même titre poétique
@@ -133,5 +133,7 @@ $categories_db = $categories_avec_titre;
     <div id="toast" class="toast"></div>
 
     <script src="../script.js"></script>
+
+    <?php include '../footer.php'; ?>
 </body>
 </html>

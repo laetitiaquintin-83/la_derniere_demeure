@@ -167,5 +167,6 @@ if (!empty($panier_session)) {
         </div>
     </section>
 
+    <?php include 'footer.php'; ?>
 </body>
 </html>

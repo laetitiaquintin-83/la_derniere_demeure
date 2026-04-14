@@ -17,10 +17,10 @@ $titres_poetiques = [
     'Urnes'                => 'Le Souffle des Anciens',
     'Stèle'                => "Les Gardiens de l'Éternité",
     'Stèles'               => "Les Gardiens de l'Éternité",
-    'Reliquaires & Stèles' => "Les Gardiens de l'Éternité",
     'Fleurs'               => "L'Offrande Éternelle",
     'Hommages Floraux'     => "L'Offrande Éternelle",
-    'Univers Passion'      => "L'Écho d'une Vie"
+    'Univers Passion'      => "L'Écho d'une Vie",
+    'Animaux'              => "Le Repos des Fidèles"
 ];
 
 // Dédupliquer les catégories qui partagent le même titre poétique
@@ -51,13 +51,13 @@ $categories_db = $categories_avec_titre;
             <a href="index.php" class="active">🏠 Accueil</a>
             <a href="images/catalogue.php">📜 Le Catalogue</a>
             <a href="images/foret.php">🌿 Le Sanctuaire</a>
+            <a href="repos_des_fideles.php">🐾 Repos des Fidèles</a>
             <a href="ceremonies.php">🕯️ L'Art de l'Adieu</a>
             <a href="contact.php">📞 Conciergerie</a>
             
             <?php 
             // VÉRIFICATION ADMIN : Ces liens n'apparaîtront que si l'utilisateur est admin
-            // (Si ta variable s'appelle différemment, ex: $_SESSION['role'] === 'admin', modifie ici)
-            if(isset($_SESSION['admin'])): 
+            if(isset($_SESSION['admin_connecte']) && $_SESSION['admin_connecte']): 
             ?>
                 <a href="admin.php">Le Registre</a>
                 <a href="gestion.php">L'Inventaire</a>
@@ -176,5 +176,7 @@ $categories_db = $categories_avec_titre;
     <div id="toast" class="toast"></div>
 
     <script src="script.js"></script>
+
+    <?php include 'footer.php'; ?>
 </body>
 </html>

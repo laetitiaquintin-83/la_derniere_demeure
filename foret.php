@@ -140,5 +140,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     <div id="toast" class="toast"></div>
 
     <script src="../script.js"></script>
+
+    <?php include '../footer.php'; ?>
 </body>
 </html>

@@ -118,7 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="Urnes">Urnes Cinéraires</option>
                         <option value="Hommages Floraux">Hommages Floraux</option>
                         <option value="Univers Passion">Univers Passion</option>
-                        <option value="Reliquaires & Stèles">Reliquaires & Stèles</option>
+                        <option value="Stèles">Stèles</option>
+                        <option value="Animaux">Repos des Fidèles</option>
                     </select>
                 </div>
                 <div class="form-group" style="flex: 1;">
