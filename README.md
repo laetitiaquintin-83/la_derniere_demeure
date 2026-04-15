@@ -7,6 +7,7 @@
 ### 🎯 Objectif du projet
 
 Créer une plateforme e-commerce permettant :
+
 - **Au client** : parcourir un catalogue de produits funéraires, consulter les services, ajouter des articles au panier et effectuer des achats
 - **À l'administrateur** : gérer le catalogue (ajout, modification, suppression de produits), contrôler les stocks, et traiter les commandes
 
@@ -14,19 +15,20 @@ Créer une plateforme e-commerce permettant :
 
 ## 🛠️ Stack Technique
 
-| Composant | Technologie | Version/Détails |
-|-----------|-------------|-----------------|
-| **Backend** | PHP | 7.4+ |
-| **Frontend** | HTML5, CSS3, JavaScript (Vanilla) | ES6+ |
-| **Base de données** | MySQL | 8.0+ |
-| **Serveur local** | Laragon/XAMPP | Apache + PHP |
-| **Gestion BD** | PDO (prepared statements) | Paramètres liés |
+| Composant           | Technologie                       | Version/Détails |
+| ------------------- | --------------------------------- | --------------- |
+| **Backend**         | PHP                               | 7.4+            |
+| **Frontend**        | HTML5, CSS3, JavaScript (Vanilla) | ES6+            |
+| **Base de données** | MySQL                             | 8.0+            |
+| **Serveur local**   | Laragon/XAMPP                     | Apache + PHP    |
+| **Gestion BD**      | PDO (prepared statements)         | Paramètres liés |
 
 ---
 
 ## 🎓 Compétences Démontrées
 
 ### 1. **Sécurité Web** 🔐
+
 - **Protection CSRF** : tokens générés et validés pour chaque formulaire
 - **Authentification sécurisée** : `password_verify()` avec hachage bcrypt
 - **Injection SQL** : éradiquée grâce aux prepared statements PDO
@@ -34,18 +36,21 @@ Créer une plateforme e-commerce permettant :
 - **Gestion des sessions** : `session_regenerate_id()` après authentification
 
 ### 2. **Architecture & Design Patterns**
+
 - **Séparation des responsabilités** : logique métier, présentation, données
 - **MVC simplifié** : fichiers dédiés pour chaque fonctionnalité
 - **DRY (Don't Repeat Yourself)** : réutilisation du `config.php` et fonctions communes
 - **PRG Pattern (Post/Redirect/Get)** : évite les doublons de données
 
 ### 3. **Bonnes Pratiques PHP**
+
 - **PDO abstraction** : indépendant du système de base de données
 - **Transactions SQL** : garantit la cohérence des stocks lors des commandes
 - **Gestion des erreurs** : try/catch pour les exceptions PDO
 - **Code commenté** : documentation explicite des décisions techniques
 
 ### 4. **Frontend & UX**
+
 - **Responsive Design** : adapté à mobile, tablette, desktop
 - **Fetch API (AJAX)** : gestion asynchrone du panier sans rechargement
 - **Intersection Observer** : animations des cartes produits au scroll
@@ -53,6 +58,7 @@ Créer une plateforme e-commerce permettant :
 - **Curseur personnalisé** : thème graphique cohérent
 
 ### 5. **Gestion de Données**
+
 - **Mise à jour de stocks** : décrémentation sécurisée lors des commandes
 - **Panier persistant** : stocké en session avec validation BD
 - **Filtrage par catégories** : requêtes dynamiques et optimisées
@@ -102,6 +108,7 @@ la_derniere_demeure/
 ## 🚀 Installation & Setup
 
 ### Prérequis
+
 - PHP 7.4+
 - MySQL 8.0+
 - Laragon ou XAMPP installé
@@ -109,6 +116,7 @@ la_derniere_demeure/
 ### Étapes d'installation
 
 #### 1️⃣ Cloner/Placer les fichiers
+
 ```bash
 # Copier le dossier dans le répertoire web de Laragon
 cd C:\laragon\www\
@@ -116,6 +124,7 @@ cd C:\laragon\www\
 ```
 
 #### 2️⃣ Créer la base de données MySQL
+
 ```sql
 CREATE DATABASE la_derniere_demeure CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE la_derniere_demeure;
@@ -140,6 +149,7 @@ CREATE INDEX idx_prix ON catalogue_funeraire(prix);
 ```
 
 #### 3️⃣ Configurer config.php
+
 ```php
 // config.php
 $host = 'localhost';
@@ -149,21 +159,24 @@ $pass = '';  // Vide pour Laragon/XAMPP local
 ```
 
 #### 4️⃣ Configuration du mot de passe admin
+
 ```bash
-# Générer un hash bcrypt pour "cerbere" (mot de passe de démo)
-# Utiliser password_hash() en CLI :
-$ php -r "echo password_hash('cerbere', PASSWORD_BCRYPT, ['cost' => 10]);"
-# Résultat : $2y$10$dQ04JR2zzMidalMeBMeMiuNgBnSaJBv/PNRYq2fxptuFmGnl1JDO2
-# Remplacer $hash_sauvegarde dans login.php
+# Mot de passe admin actuel : cerbere
+# Hash bcrypt stocké dans login.php :
+$2y$10$g4b7j.qM8tjFXDsA5g1efOnAg5hrtHmUPYAituen0cM4BPzGcA7Aa
+
+# Pour générer un nouveau hash en CLI :
+$ php -r "echo password_hash('votre_mdp', PASSWORD_BCRYPT, ['cost' => 10]);"
+# Puis remplacer $hash_sauvegarde dans login.php
 ```
 
 #### 5️⃣ Démarrer l'application
+
 ```bash
 # Lancer Laragon
 # Accéder à http://localhost/la_derniere_demeure/
 
 # Identifiants de connexion admin :
-# Utilisateur : (aucun, login direct)
 # Mot de passe : cerbere
 ```
 
@@ -174,26 +187,32 @@ $ php -r "echo password_hash('cerbere', PASSWORD_BCRYPT, ['cost' => 10]);"
 ### 👥 Côté Client
 
 #### 📖 Catalogue de produits
+
 - Affichage avec grille responsive
-- Filtrage par catégories (Cercueils, Urnes, Stèles, Fleurs, Univers Passion)
-- Animations au scroll (Intersection Observer)
+- Filtrage par catégories : **Cercueils, Urnes, Stèles, Fleurs, Univers Passion, Animaux**
+- Animations des cartes au scroll (Intersection Observer) - **sauf sur la page Cérémonies**
+- Titres poétiques pour chaque catégorie : "Vaisseaux de Mémoire", "Le Souffle des Anciens", etc.
 - Images optimisées du catalogue
 
 #### 🛒 Gestion du panier
+
 - Ajout/suppression d'articles en temps réel (AJAX)
 - Compteur dynamique dans la barre de navigation
 - Persistance en session utilisateur
 - Validation des stocks avant commande
 
 #### 💳 Paiement
+
 - Formulaire de commande avec validation
 - Traitement des transactionsSQL (atomicité garantie)
 - Mise à jour automatique des stocks
 - Confirmation de commande
 
 #### ✨ Sections thématiques
-- **Le Sanctuaire des Racines** : présentation de la forêt cinéraire
-- **L'Art du Baptême de Mémoire** : rituels et cérémonies
+
+- **Le Sanctuaire des Racines** : présentation de la forêt cinéraire avec effets de flottement sur les images
+- **L'Art de l'Adieu** : rituels et cérémonies avec effets mystiques (voile lumineux, balayage de lumière)
+- **Le Repos des Fidèles** : section dédiée aux compagnons animaux avec urnes commémoratives
 - **Toast notifications** : retours utilisateur en temps réel
 
 ---
@@ -201,23 +220,27 @@ $ php -r "echo password_hash('cerbere', PASSWORD_BCRYPT, ['cost' => 10]);"
 ### 🔧 Côté Administrateur
 
 #### ➕ Ajouter un produit
+
 - Formulaire complet (nom, catégorie, prix, stock, essence, description)
 - Upload d'images avec validation type/taille
 - Nommage sécurisé avec timestamp aléatoire
 - Protection CSRF obligatoire
 
 #### 📋 Gestion de l'inventaire
+
 - Dashboard d'inventaire avec tous les produits
 - Vue d'ensemble du stock (En Stock / Critique / Épuisé)
 - Miniatures des produits pour identification rapide
 
 #### ✏️ Modifier un produit
+
 - Édition de tous les champs sauf l'image (par défaut)
 - **Nouveau** : Possibilité de lier une image renommée manuellement via chemin
 - Ou télécharger une nouvelle image
 - Validation complète des données
 
 #### 🗑️ Supprimer un produit
+
 - Suppression avec confirmation
 - Token CSRF pour prévention attaques
 - Suppression logique de la base de données
@@ -225,6 +248,25 @@ $ php -r "echo password_hash('cerbere', PASSWORD_BCRYPT, ['cost' => 10]);"
 ---
 
 ## 🔒 Aspects Sécurité Implémentés
+
+### Sessions & Authentification
+
+```php
+// ✅ Session admin unifiée
+session_start();
+$_SESSION['admin_connecte'] = true;  // Utilisé partout (cohérent)
+
+// ✅ Vérification au chargement des pages admin
+if (!isset($_SESSION['admin_connecte']) || !$_SESSION['admin_connecte']) {
+    header('Location: login.php');
+    exit;
+}
+
+// ✅ Déconnexion sécurisée
+session_destroy();
+```
+
+### Protections Supplémentaires
 
 ```php
 // ✅ 1. Protection CSRF
@@ -259,11 +301,43 @@ try {
 }
 ```
 
+validerTokenCSRF($token); // Validation stricte
+
+// ✅ 2. Authentification sécurisée
+password_verify($mdp_saisi, $hash_sauvegarde);
+session_regenerate_id(true); // Prévention fixation session
+
+// ✅ 3. Prepared Statements (Injection SQL)
+$stmt = $pdo->prepare("SELECT * FROM catalogue_funeraire WHERE id = ?");
+$stmt->execute([$id]);
+
+// ✅ 4. Validation des entrées
+ctype_digit(strval($id));  // Vérifier type numérique
+filter_var($email, FILTER_VALIDATE_EMAIL); // Email valide
+!is_numeric($prix) || $prix > 999999.99; // Plage logique
+
+// ✅ 5. Transactions pour cohérence données
+$pdo->beginTransaction();
+// ... modifications ...
+$pdo->commit(); // Ou rollback() en cas erreur
+
+// ✅ 6. Gestion des erreurs sécurisée
+try {
+// Code
+} catch (PDOException $e) {
+    // Ne JAMAIS exposer $e->getMessage() à l'utilisateur
+    error_log($e->getMessage()); // Enregistrement serveur
+die("Erreur système. Contact administrateur.");
+}
+
+```
+
 ---
 
 ## 🔄 Flux de Commande (Transactionnel)
 
 ```
+
 1. Client ajoute articles au panier (session)
    ↓
 2. Clique "Passer commande"
@@ -281,11 +355,97 @@ try {
 6. Vider le panier (session)
    ↓
 7. Redirection + message confirmation
+
 ```
 
 ---
 
-## 💡 Améliorations Futures
+## � Changelog - Mises à Jour Récentes (v1.1)
+
+### ✨ Nouvelles Fonctionnalités
+- **Repos des Fidèles** : Nouvelle page dédiée aux compagnons animaux
+  - Section hommage poétique
+  - 6 services spécialisés avec cartes élégantes
+  - Galerie d'urnes commémoratives (catégorie "Animaux")
+  - Boutons "Ajouter à l'Offrande" fonctionnels
+  - Design responsive avec animations
+
+- **Footer réutilisable** : `footer.php` intégré sur toutes les pages publiques
+  - Navigation cohérente avec liens vers toutes les sections
+  - Informations de contact et mentions légales
+  - Design sombre harmonisé au reste du site
+
+### 🎨 Améliorations Visuelles
+- **Effets sur les images du Sanctuaire** :
+  - Animation de flottement subtile (6s)
+  - Zoom au survol (1.05x) avec filtre luminosité
+  - Overlay doré qui apparaît au hover
+
+- **Effets sur les images des Cérémonies** :
+  - Voile lumineux radial doré (halo mystique)
+  - Balayage de lumière continu (4s)
+  - Animation de respiration (8s)
+  - Saturation améliorée au hover
+
+- **Centrage des images des urnes** :
+  - Flexbox centering automatique
+  - `object-fit: contain` pour aucun recadrage
+  - Images bien proportionnées dans leurs containers
+
+### 🐛 Corrections & Nettoyage
+- **Système d'authentification admin** 🔐
+  - Correction du hash bcrypt pour mot de passe "cerbere"
+  - Synchronisation des variables de session (`$_SESSION['admin_connecte']`)
+  - Login système entièrement fonctionnel
+
+- **Refonte catégories produits** 📦
+  - Suppression de "Reliquaires & Stèles" (doublon)
+  - Remplacement par "Stèles" seul
+  - Ajout de "Animaux" pour la section Repos des Fidèles
+  - Mapping des titres poétiques mis à jour
+
+- **Animations optimisées** ⚡
+  - Animation progressive (Intersection Observer) **limitée à la page Cérémonies**
+  - Toutes les autres pages chargent les éléments sans animation progressive
+  - Amélioration de la performance
+
+### 📁 Fichiers Créés/Modifiés
+| Fichier | Type | Description |
+|---------|------|-------------|
+| `repos_des_fideles.php` | ✨ CRÉÉ | Page complète "Repos des Fidèles" avec urnes |
+| `footer.php` | ✨ CRÉÉ | Template footer réutilisable |
+| `index.php` | 🔧 MODIFIÉ | Ajout lien Repos des Fidèles, fix session |
+| `ceremonies.php` | 🎨 MODIFIÉ | Effets mystiques sur les images |
+| `images/foret.php` | 🎨 MODIFIÉ | Effets de flottement + overlay |
+| `admin.php` | 📦 MODIFIÉ | Catégories mises à jour (Stèles, Animaux) |
+| `login.php` | 🔐 MODIFIÉ | Hash bcrypt corrigé |
+| `script.js` | ⚡ MODIFIÉ | Animation progressive limitée à Cérémonies |
+| `style.css` | — | Styles existants (non modifié) |
+
+---
+
+## 🎯 État du Projet
+
+### ✅ Prêt pour Production
+- [x] Système de login sécurisé et fonctionnel
+- [x] Gestion complète du panier (AJAX)
+- [x] Administration du catalogue (CRUD)
+- [x] Transactions SQL atomiques
+- [x] Protection CSRF/SQL injection
+- [x] Design responsive et mobile-friendly
+- [x] Toutes les pages publiques intégrées
+- [x] Sections thématiques avec animations
+
+### 🟡 À Considérer
+- [ ] Déploiement sur serveur de production
+- [ ] Email de confirmation de commande
+- [ ] Intégration paiement réelle (Stripe)
+- [ ] Système multi-administrateurs avec rôles
+- [ ] Historique de commandes client
+
+---
+
+## �💡 Améliorations Futures
 
 ### Court terme 🟢
 - [ ] Email de confirmation de commande
@@ -365,5 +525,7 @@ Projet étudiant - Librement utilisable à des fins pédagogiques.
 ---
 
 **Bonne chance pour votre examen! 🍀**
-#   l a _ d e r n i e r e _ d e m e u r e  
+#   l a _ d e r n i e r e _ d e m e u r e 
  
+ 
+```

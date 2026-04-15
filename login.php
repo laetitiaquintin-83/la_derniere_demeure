@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
 
         // Le mot de passe est bon, on donne la clé d'accès (nom identique à index.php)
-        $_SESSION['admin'] = true;
+        $_SESSION['admin_connecte'] = true;
         
         // On redirige vers le registre
         header('Location: admin.php');

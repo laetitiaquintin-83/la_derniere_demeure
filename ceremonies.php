@@ -37,6 +37,66 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             min-width: 300px;
             background-size: cover;
             background-position: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.8s ease;
+        }
+
+        /* Effet mystique avec voile lumineux */
+        .ceremonie-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+            opacity: 0.5;
+            z-index: 1;
+            transition: opacity 0.8s ease;
+        }
+
+        .ceremonie-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.15) 50%, transparent 70%);
+            opacity: 0;
+            animation: light-sweep 4s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        /* Animation de balayage de lumière */
+        @keyframes light-sweep {
+            0%, 100% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Effet au survol */
+        .ceremonie-split:hover .ceremonie-image {
+            filter: brightness(1.15) saturate(1.2);
+            transform: scale(1.03);
+        }
+
+        .ceremonie-split:hover .ceremonie-image::before {
+            opacity: 0.8;
+        }
+
+        /* Animation subtile de respiration */
+        @keyframes ceremonie-breath {
+            0%, 100% {
+                filter: brightness(1) contrast(1);
+            }
+            50% {
+                filter: brightness(1.05) contrast(1.05);
+            }
+        }
+
+        .ceremonie-image {
+            animation: ceremonie-breath 8s ease-in-out infinite;
         }
         .ceremonie-title {
             color: #D4AF37;
@@ -113,6 +173,30 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p style="margin-top: 15px; font-style: italic; color: #888;">On y porte un toast aux succès, aux passions et aux moments partagés, honorant la personne telle qu'elle était vraiment.</p>
         </div>
         <div class="ceremonie-image" style="background-image: url('images/celebration-banquet-lys.jpg');"></div>
+    </section>
+
+    <!-- SECTION JARDINS DES SOUVENIRS -->
+    <section style="background: #050505; padding: 60px 0; margin-top: 50px; border-top: 1px dashed #d4af37;">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 0 40px;">
+            <h2 style="font-family: 'Cinzel', serif; color: #d4af37; font-size: 2rem;">Inscrivez l'Éternité</h2>
+            <p style="font-style: italic; color: #888; margin-bottom: 30px;">Laissez une trace, une pensée, un souvenir de votre adieu personnalisé.</p>
+
+            <form action="traitement_jardin.php" method="POST" enctype="multipart/form-data" class="jardin-form" style="background: #111; padding: 30px; border: 1px solid #222; text-align: left;">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <input type="text" name="nom_proprietaire" placeholder="Votre Nom" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white; font-family: 'Cinzel', serif; text-align: center;">
+                    <input type="text" name="nom_animal" placeholder="Nom de l'ange" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white; font-family: 'Cinzel', serif; text-align: center;">
+                </div>
+                
+                <textarea name="message" placeholder="Une pensée pour lui..." rows="4" required style="width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: white; margin-bottom: 15px; font-family: Arial; box-sizing: border-box;"></textarea>
+
+                <div class="file-input-wrapper" style="margin-bottom: 15px;">
+                    <label style="color: #d4af37; font-size: 0.8rem; display: block; margin-bottom: 5px;">Joindre un portrait (Optionnel)</label>
+                    <input type="file" name="photo_compagnon" accept="image/*" style="color: #888;">
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 12px; background: #d4af37; color: black; border: none; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">Déposer une étoile</button>
+            </form>
+        </div>
     </section>
 
     <section style="padding: 100px 5%; text-align: center; background: #000; border-top: 1px solid #222;">

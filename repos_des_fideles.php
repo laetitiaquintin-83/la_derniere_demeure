@@ -495,6 +495,52 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
         </div>
     </section>
 
+    <!-- SECTION JARDIN DES SOUVENIRS -->
+    <section class="jardin-souvenirs" style="background: #050505; padding: 60px 0; margin-top: 50px; border-top: 1px dashed #d4af37;">
+        <div class="container" style="max-width: 800px; margin: 0 auto; text-align: center; padding: 0 40px;">
+            <h2 style="font-family: 'Cinzel', serif; color: #d4af37; font-size: 2rem;">Le Jardin des Souvenirs</h2>
+            <p style="font-style: italic; color: #888; margin-bottom: 30px;">Laissez une trace, un mot, une pensée pour ceux qui ne sont plus là.</p>
+
+            <form action="traitement_jardin.php" method="POST" enctype="multipart/form-data" style="background: #111; padding: 30px; border: 1px solid #222; margin-top: 30px; margin-bottom: 50px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <input type="text" name="nom_proprietaire" placeholder="Votre Nom" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white;">
+                    <input type="text" name="nom_animal" placeholder="Nom de votre compagnon" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white;">
+                </div>
+                <textarea name="message" placeholder="Votre message d'adieu..." rows="4" required style="width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: white; margin-bottom: 15px; box-sizing: border-box;"></textarea>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="color: #d4af37; font-size: 0.8rem; display: block; margin-bottom: 5px;">Joindre un portrait (Optionnel)</label>
+                    <input type="file" name="photo_compagnon" accept="image/*" style="color: #888;">
+                </div>
+                
+                <button type="submit" class="btn-crypt" style="padding: 10px 30px; background: #d4af37; color: black; border: none; font-family: 'Cinzel', serif; cursor: pointer; font-weight: bold; text-transform: uppercase;">Déposer une pensée</button>
+            </form>
+
+            <h3 style="font-family: 'Cinzel', serif; color: #d4af37; font-size: 1.5rem; margin-bottom: 30px;">Les Témoignages Déposés</h3>
+            
+            <div class="memorial-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <?php
+                $messages = $pdo->query("SELECT * FROM livre_dor_animaux WHERE approuve = 1 ORDER BY date_publication DESC")->fetchAll();
+                if (count($messages) > 0) {
+                    foreach ($messages as $m): ?>
+                        <div class="memorial-card" style="background: #111; border: 1px solid #222; padding: 20px; text-align: center;">
+                            <?php if ($m['photo_path']): ?>
+                                <img src="<?php echo htmlspecialchars($m['photo_path']); ?>" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #d4af37; margin-bottom: 15px;">
+                            <?php endif; ?>
+                            
+                            <h3 style="color: #d4af37; font-family: 'Cinzel'; margin: 0;"><?php echo htmlspecialchars_decode($m['nom_animal']); ?></h3>
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px;">Compagnon de <?php echo htmlspecialchars_decode($m['nom_proprietaire']); ?></p>
+                            <p style="font-style: italic; color: #bbb;">"<?php echo htmlspecialchars_decode($m['message']); ?>"</p>
+                        </div>
+                    <?php endforeach;
+                } else {
+                    echo '<p style="grid-column: 1 / -1; text-align: center; color: #999; padding: 40px;">Soyez le premier à déposer une pensée...</p>';
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+
     <!-- SECTION CTA -->
     <section class="cta-section">
         <p class="cta-text">

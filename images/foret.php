@@ -36,6 +36,43 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             min-width: 300px;
             background-size: cover;
             background-position: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s ease;
+        }
+
+        /* Effets d'overlay et d'animation */
+        .foret-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: 1;
+        }
+
+        .foret-split:hover .foret-image {
+            transform: scale(1.05);
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .foret-split:hover .foret-image::before {
+            opacity: 1;
+        }
+
+        /* Animation de parallaxe légère */
+        @keyframes float-gentle {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+
+        .foret-image {
+            animation: float-gentle 6s ease-in-out infinite;
         }
         .script-font {
             font-family: 'Great Vibes', cursive;

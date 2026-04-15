@@ -1,40 +1,59 @@
 <?php
 require_once 'config.php';
 
-// 1. Vérifier l'authentification
+// 1. Vérifier l'authentification (Sécurité Gardien)
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
     header('Location: login.php');
     exit;
 }
 
 $message = "";
-$messageType = ""; // 'error' ou 'success'
+$messageType = ""; 
 
-// Calcul du compteur panier
+// --- LOGIQUE DE MODÉRATION DU JARDIN DES SOUVENIRS ---
+if (isset($_GET['valider_message'])) {
+    $id = (int)$_GET['valider_message'];
+    $pdo->prepare("UPDATE livre_dor_animaux SET approuve = 1 WHERE id = ?")->execute([$id]);
+    $message = "La pensée a été scellée dans le Jardin.";
+    $messageType = "success";
+}
+
+if (isset($_GET['supprimer_message'])) {
+    $id = (int)$_GET['supprimer_message'];
+    // Optionnel : supprimer le fichier image du serveur si besoin avant la suppression SQL
+    $pdo->prepare("DELETE FROM livre_dor_animaux WHERE id = ?")->execute([$id]);
+    $message = "La pensée a été bannie du registre.";
+    $messageType = "error";
+}
+
+// Génération du jeton CSRF
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// Compteur panier
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
-        $message = "Erreur de sécurité : jeton CSRF invalide.";
+// 2. Traitement du Formulaire d'Ajout d'Article
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $message = "Erreur de sécurité : le sceau CSRF est invalide.";
         $messageType = "error";
     } else {
-        // Validation des données
         $nom = trim($_POST['nom'] ?? '');
         $categorie = trim($_POST['categorie'] ?? '');
         $prix = $_POST['prix'] ?? '';
         $stock = $_POST['stock'] ?? '';
-        $essence_bois = trim($_POST['essence_bois'] ?? '');
-        $couleur_velours = trim($_POST['couleur_velours'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
         if (empty($nom) || empty($categorie) || $prix === "" || $stock === "") {
-            $message = "Erreur : les champs obligatoires doivent être complétés.";
+            $message = "Erreur : tous les champs obligatoires doivent être complétés.";
             $messageType = "error";
         } elseif (!isset($_FILES["image"]) || $_FILES["image"]["error"] !== UPLOAD_ERR_OK) {
-            $message = "Erreur : une image est requise pour illustrer la relique.";
+            $message = "Erreur : une relique visuelle (image) est requise.";
             $messageType = "error";
         } else {
-            // Logique d'upload
             $target_dir = "images/catalogue/";
             if (!file_exists($target_dir)) { mkdir($target_dir, 0777, true); }
 
@@ -42,22 +61,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file_name = time() . "_" . bin2hex(random_bytes(4)) . "." . $file_extension;
             $target_file = $target_dir . $file_name;
 
-            $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
-            if (!in_array($_FILES["image"]["type"], $allowed_types)) {
-                $message = "Erreur : format accepté JPG, PNG ou WebP uniquement.";
+            if (!in_array($_FILES["image"]["type"], ['image/jpeg', 'image/png', 'image/webp'])) {
+                $message = "Erreur : formats acceptés JPG, PNG ou WebP uniquement.";
                 $messageType = "error";
             } else {
                 if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
                     try {
-                        $sql = "INSERT INTO catalogue_funeraire (nom, essence_bois, couleur_velours, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql = "INSERT INTO catalogue_funeraire (nom, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?)";
                         $stmt = $pdo->prepare($sql);
-                        $stmt->execute([$nom, $essence_bois, $couleur_velours, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
-                        
-                        $message = "L'article « $nom » a été scellé avec succès.";
+                        $stmt->execute([$nom, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
+                        $message = "L'article « $nom » a été ajouté avec succès.";
                         $messageType = "success";
                     } catch (PDOException $e) {
                         if (file_exists($target_file)) { unlink($target_file); }
-                        $message = "Erreur SQL : Impossible d'enregistrer la relique.";
+                        $message = "Erreur SQL : " . $e->getMessage();
                         $messageType = "error";
                     }
                 }
@@ -71,13 +88,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<?php echo genererTokenCSRF(); ?>">
-    <title>Administration | La Dernière Demeure</title>
+    <title>Administration | Registre de la Crypte</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .error-box { background: rgba(255, 76, 76, 0.2); border: 1px solid #ff4c4c; color: #ff4c4c; padding: 15px; margin-bottom: 20px; border-radius: 3px; }
-        .success-box { background: rgba(74, 222, 128, 0.2); border: 1px solid #4ade80; color: #4ade80; padding: 15px; margin-bottom: 20px; border-radius: 3px; }
+        :root { --gold: #d4af37; --dark-bg: #0a0a0a; --panel-bg: #111111; }
+        body.admin-body { background-color: var(--dark-bg); color: #e0e0e0; font-family: 'Arial', sans-serif; margin: 0; }
+        .admin-nav nav { display: flex; align-items: center; padding: 20px 5%; background: #000; border-bottom: 1px solid var(--gold); }
+        .admin-nav a { color: #fff; text-decoration: none; margin-right: 25px; font-family: 'Cinzel', serif; font-size: 0.9rem; transition: color 0.3s; }
+        .admin-nav a:hover, .admin-nav a.active { color: var(--gold); }
+        .admin-container { max-width: 900px; margin: 40px auto; background: var(--panel-bg); padding: 40px; border: 1px solid #222; }
+        .admin-title { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; font-size: 2rem; margin-bottom: 30px; text-transform: uppercase; }
+        .error-box { background: rgba(255, 76, 76, 0.15); border: 1px solid #ff4c4c; color: #ff4c4c; padding: 15px; margin-bottom: 25px; text-align: center; }
+        .success-box { background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; color: #4ade80; padding: 15px; margin-bottom: 25px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.8rem; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; background: #050505; border: 1px solid #333; color: #fff; box-sizing: border-box; }
+        .btn-crypt { background: var(--gold); color: #000; border: none; padding: 15px 30px; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-crypt:hover { background: #fff; }
+        .form-row { display: flex; gap: 20px; }
+        .form-row > div { flex: 1; }
+        .message-card { background: #050505; border: 1px solid #222; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; }
     </style>
 </head>
 <body class="admin-body"> 
@@ -85,16 +116,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="admin-nav">
         <nav>
             <a href="index.php">Accueil</a>
-            <a href="images/catalogue.php">Le Catalogue</a>
+            <a href="catalogue.php">Le Catalogue</a>
             <a href="admin.php" class="active">Le Registre</a>
             <a href="gestion.php">L'Inventaire</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
-            <a href="logout.php" class="lock-link" style="color: #ff4c4c;">🔓 Quitter</a>
+            <a href="panier.php" style="margin-left: auto;">L'Offrande (<?php echo $nombre_articles; ?>)</a>
+            <a href="logout.php" style="color: #ff4c4c;">🔓 Quitter</a>
         </nav>
     </header>
 
     <div class="admin-container">
-        <h1 class="admin-title">Registre de la Crypte</h1>
+        <h1 class="admin-title">Ajouter une Relique</h1>
         
         <?php if($message): ?>
             <div class="<?php echo ($messageType === 'success') ? 'success-box' : 'error-box'; ?>">
@@ -102,33 +133,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form method="POST" enctype="multipart/form-data" class="crypt-form">
-            <input type="hidden" name="csrf_token" value="<?php echo genererTokenCSRF(); ?>">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+            <input type="hidden" name="ajouter_article" value="1">
             
             <div class="form-group">
-                <label>Désignation de l'article</label>
-                <input type="text" name="nom" placeholder="Ex: L'Éminence Sombre..." required>
+                <label>Désignation de la Relique</label>
+                <input type="text" name="nom" required>
             </div>
             
-            <div class="form-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="form-group" style="flex: 2;">
+            <div class="form-row">
+                <div class="form-group">
                     <label>Nature / Univers</label>
                     <select name="categorie" required>
                         <option value="Cercueils">Cercueils & Sarcophages</option>
                         <option value="Urnes">Urnes Cinéraires</option>
                         <option value="Hommages Floraux">Hommages Floraux</option>
-                        <option value="Univers Passion">Univers Passion</option>
                         <option value="Stèles">Stèles</option>
                         <option value="Animaux">Repos des Fidèles</option>
+                        <option value="Jardin">Jardin des Souvenirs</option>
                     </select>
                 </div>
-                <div class="form-group" style="flex: 1;">
+                <div class="form-group">
                     <label>Offrande (€)</label>
-                    <input type="number" step="0.01" name="prix" placeholder="0.00" required>
+                    <input type="number" step="0.01" name="prix" required>
                 </div>
-                <div class="form-group" style="flex: 1;">
+                <div class="form-group">
                     <label>Stock</label>
-                    <input type="number" name="stock" min="0" required>
+                    <input type="number" name="stock" value="1" min="0" required>
                 </div>
             </div>
 
@@ -139,11 +171,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="form-group">
                 <label>Relique Visuelle (Image)</label>
-                <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required>
+                <input type="file" name="image" accept="image/*" required>
             </div>
             
-            <button type="submit" class="btn-crypt" style="width: 100%; margin-top: 20px; cursor: pointer;">Sceller dans le Catalogue</button>
+            <button type="submit" class="btn-crypt">Sceller au Catalogue</button>
         </form>
+    </div>
+
+    <div class="admin-container">
+        <h2 class="admin-title" style="font-size: 1.5rem;">Modération du Jardin</h2>
+        
+        <?php
+        $attente = $pdo->query("SELECT * FROM livre_dor_animaux WHERE approuve = 0 ORDER BY date_publication DESC")->fetchAll();
+        if (empty($attente)): ?>
+            <p style="text-align: center; color: #666;">Aucune nouvelle pensée en attente.</p>
+        <?php else: 
+            foreach ($attente as $m): ?>
+                <div class="message-card">
+                    <?php if($m['photo_path']): ?>
+                        <img src="<?php echo $m['photo_path']; ?>" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--gold);">
+                    <?php endif; ?>
+                    <div style="flex: 1;">
+                        <strong style="color: var(--gold);"><?php echo htmlspecialchars($m['nom_animal']); ?></strong> 
+                        <span style="font-size: 0.8rem; color: #888;"> (Par <?php echo htmlspecialchars($m['nom_proprietaire']); ?>)</span>
+                        <p style="margin: 5px 0; font-size: 0.9rem; font-style: italic;">"<?php echo htmlspecialchars($m['message']); ?>"</p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="admin.php?valider_message=<?php echo $m['id']; ?>" style="color: #4ade80; text-decoration: none; font-weight: bold;">[ VALIDER ]</a>
+                        <a href="admin.php?supprimer_message=<?php echo $m['id']; ?>" style="color: #ff4c4c; text-decoration: none; font-size: 0.8rem;" onclick="return confirm('Bannir cette pensée ?')">[ SUPPRIMER ]</a>
+                    </div>
+                </div>
+            <?php endforeach; 
+        endif; ?>
     </div>
 </body>
 </html>
