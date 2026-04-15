@@ -57,7 +57,7 @@ $categories_db = $categories_avec_titre;
             
             <?php 
             // VÉRIFICATION ADMIN : Ces liens n'apparaîtront que si l'utilisateur est admin
-            if(isset($_SESSION['admin_connecte']) && $_SESSION['admin_connecte']): 
+            if($_SESSION['admin_connecte'] === true): 
             ?>
                 <a href="admin.php">◆ Registre</a>
                 <a href="gestion.php">✦ Inventaire</a>
