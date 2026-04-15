@@ -4,10 +4,6 @@ require_once 'config.php';
 
 $erreur = "";
 
-// Le hachage généré au préalable (ne JAMAIS utiliser password_hash() directement ici)
-// Remplace cette chaîne par celle que tu auras générée pour "cerbere" !
-$hash_sauvegarde = '$2y$10$dQ04JR2zzMidalMeBMeMiuNgBnSaJBv/PNRYq2fxptuFmGnl1JDO2'; 
-
 // Si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
@@ -17,23 +13,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Erreur de sécurité : Jeton invalide. Le sceau a été corrompu.");
     }
 
+    // SÉCURITÉ: Récupération sécurisée du mot de passe saisi
+    $username = trim($_POST['username'] ?? 'admin');
     $mdp_saisi = $_POST['mot_de_passe'] ?? '';
     
-    // 2. On vérifie de manière sécurisée si le mot de passe correspond
-    if (password_verify($mdp_saisi, $hash_sauvegarde)) {
+    // 2. Vérifier les credentials en base de données (SÉCURITÉ MAXIMALE)
+    try {
+        $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE username = ? LIMIT 1");
+        $stmt->execute([$username]);
+        $result = $stmt->fetch();
         
-        // Protection contre la fixation de session (Excellente pratique pour l'examen)
-        session_regenerate_id(true);
+        if ($result && password_verify($mdp_saisi, $result['password_hash'])) {
+            // Protection contre la fixation de session (Excellente pratique pour l'examen)
+            session_regenerate_id(true);
 
-        // Le mot de passe est bon, on donne la clé d'accès (nom identique à index.php)
-        $_SESSION['admin_connecte'] = true;
-        
-        // On redirige vers le registre
-        header('Location: admin.php');
-        exit;
-    } else {
-        // En cas d'erreur, on peut imaginer ajouter un délai (sleep(2)) pour ralentir les attaques par force brute
-        $erreur = "Accès refusé. Sceau incorrect.";
+            // Le mot de passe est bon, on donne la clé d'accès
+            $_SESSION['admin_connecte'] = true;
+            
+            // On redirige vers le registre
+            header('Location: admin.php');
+            exit;
+        } else {
+            // Intentionnellement vague pour éviter user enumeration
+            $erreur = "Accès refusé. Sceau incorrect.";
+        }
+    } catch (PDOException $e) {
+        $erreur = "Erreur système. Veuillez réessayer.";
     }
 }
 ?>

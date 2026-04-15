@@ -48,31 +48,34 @@ $categories_db = $categories_avec_titre;
 <body>
     <header class="hero-section">
         <nav>
-            <a href="index.php" class="active">🏠 Accueil</a>
-            <a href="images/catalogue.php">📜 Le Catalogue</a>
-            <a href="images/foret.php">🌿 Le Sanctuaire</a>
-            <a href="repos_des_fideles.php">🐾 Repos des Fidèles</a>
-            <a href="ceremonies.php">🕯️ L'Art de l'Adieu</a>
-            <a href="contact.php">📞 Conciergerie</a>
+            <a href="index.php" class="active">✦ Accueil</a>
+            <a href="images/catalogue.php">✿ Catalogue</a>
+            <a href="images/foret.php">✾ Sanctuaire</a>
+            <a href="repos_des_fideles.php">✤ Repos des Fidèles</a>
+            <a href="ceremonies.php">❦ Art de l'Adieu</a>
+            <a href="contact.php">❋ Conciergerie</a>
             
             <?php 
             // VÉRIFICATION ADMIN : Ces liens n'apparaîtront que si l'utilisateur est admin
             if(isset($_SESSION['admin_connecte']) && $_SESSION['admin_connecte']): 
             ?>
-                <a href="admin.php">Le Registre</a>
-                <a href="gestion.php">L'Inventaire</a>
+                <a href="admin.php">◆ Registre</a>
+                <a href="gestion.php">✦ Inventaire</a>
             <?php endif; ?>
 
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="panier.php" style="margin-left: auto;">✵ Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
             
             <?php if(isset($_SESSION['user_id'])): ?>
-                <a href="logout.php" class="lock-link">🔓 Quitter</a>
+                <a href="logout.php" class="lock-link">◇ Quitter</a>
             <?php else: ?>
-                <a href="login.php" class="lock-link">🔒 Entrer</a>
+                <a href="login.php" class="lock-link">◆ Entrer</a>
             <?php endif; ?>
         </nav>
         
         <div class="hero-content">
+            <div class="logo-container">
+                <img src="images/logo.svg" alt="La Dernière Demeure" class="hero-logo">
+            </div>
             <span class="citation">"La mort n'est pas une fin, c'est une métamorphose"</span>
             <h1>LA DERNIÈRE<br>DEMEURE</h1>
             <h2 class="sous-titre">L'Éternité pour Écrin</h2>
@@ -82,6 +85,45 @@ $categories_db = $categories_avec_titre;
             </div>
         </div>
     </header>
+
+    <!-- SECTION PRÉSENTATION PREMIUM -->
+    <section class="prestige-section">
+        <div class="prestige-container">
+            <div class="prestige-header">
+                <span class="prestige-divider"></span>
+                <h2 class="prestige-title">Bienvenue à La Dernière Demeure</h2>
+                <span class="prestige-divider"></span>
+            </div>
+            
+            <div class="prestige-content">
+                <div class="prestige-text">
+                    <p class="prestige-lead">Depuis des générations, nous honorons la transition suprême avec dignité, respect et raffinement.</p>
+                    <p class="prestige-description">
+                        La Dernière Demeure n'est pas une simple maison funéraire. C'est un sanctuaire de la mémoire, 
+                        où chaque détail est pensé pour transformer le chagrin en une célébration dignifiée de la vie.
+                    </p>
+                    <div class="prestige-features">
+                        <div class="feature">
+                            <span class="feature-icon">❦</span>
+                            <p><strong>Cérémonies</strong> personnalisées</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✾</span>
+                            <p><strong>Sanctuaire</strong> forestier</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✤</span>
+                            <p><strong>Collections</strong> d'exception</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✿</span>
+                            <p><strong>Mémoire</strong> éternelle</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section id="catalogue" class="catalogue-section">
         

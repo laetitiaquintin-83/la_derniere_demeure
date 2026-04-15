@@ -65,58 +65,83 @@ a, button, .btn-gold, .modifier, .supprimer, .btn-action,
 /* NAVIGATION */
 nav {
     width: 100%;
-    padding: 25px 60px;
+    padding: 12px 15px;
     display: flex;
-    gap: 50px;
+    gap: 8px;
     z-index: 10;
-    background: linear-gradient(to bottom, rgba(5, 5, 5, 0.7), transparent);
-    justify-content: center;
+    background: linear-gradient(to bottom, rgba(5, 5, 5, 0.9), rgba(5, 5, 5, 0.6));
+    justify-content: flex-start;
     align-items: center;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    flex-wrap: wrap;
 }
 
 nav a {
-    color: #b3b3b3;
+    color: var(--gold-bright);
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 0.75em;
-    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 0.6em;
+    font-weight: 700;
     transition: all 0.3s ease;
     font-family: 'Cinzel', serif;
-    padding: 8px 0;
+    padding: 4px 6px;
     border-bottom: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    position: relative;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold-bright), var(--gold));
+    transition: width 0.3s ease;
 }
 
 nav a:hover {
-    color: var(--gold-bright);
-    border-bottom-color: var(--gold-bright);
-    text-shadow: 0 0 15px rgba(181, 148, 16, 0.4);
+    color: #fff;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+}
+
+nav a:hover::before {
+    width: 100%;
 }
 
 nav a.active {
-    color: var(--gold-bright);
+    color: #fff;
+    text-shadow: 0 0 15px var(--gold-bright);
     border-bottom-color: var(--gold-bright);
 }
 
 /* Lien Cadenas Connexion */
 .lock-link {
     color: var(--gold-bright) !important;
-    font-size: 0.9em !important;
-    padding: 8px 16px !important;
-    border: 1px solid var(--gold) !important;
-    border-radius: 20px !important;
+    font-size: 0.7em !important;
+    padding: 6px 12px !important;
+    border: 1.5px solid var(--gold-bright) !important;
+    border-radius: 15px !important;
     transition: all 0.3s ease !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 6px !important;
-    margin-left: 20px !important;
+    gap: 3px !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+    background: rgba(212, 175, 55, 0.05) !important;
 }
 
 .lock-link:hover {
-    background: var(--gold) !important;
+    background: var(--gold-bright) !important;
     color: #000 !important;
-    box-shadow: 0 0 15px rgba(181, 148, 16, 0.5) !important;
-    transform: scale(1.05) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6) !important;
+    transform: scale(1.08) !important;
 }
 
 /* Navigation Admin */
@@ -147,35 +172,96 @@ nav a.active {
     z-index: 5;
 }
 
+/* LOGO STYLING */
+.logo-container {
+    margin-bottom: 40px;
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+.hero-logo {
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5));
+    opacity: 0.95;
+    transition: all 0.4s ease;
+    margin-top: 10px;
+}
+
+.hero-logo:hover {
+    transform: scale(1.05) rotateZ(2deg);
+    filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.8));
+    opacity: 1;
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
 h1 {
     font-family: 'Cinzel', serif;
     font-size: clamp(2.5em, 8vw, 5em);
     letter-spacing: 15px;
     color: #fff;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(0, 0, 0, 0.8);
+    text-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.6),
+        0 0 40px rgba(212, 175, 55, 0.3),
+        0 0 60px rgba(212, 175, 55, 0.2),
+        0 0 15px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(0, 0, 0, 0.8);
     margin: 10px 0;
-    line-height: 1.1;
+    line-height: 1.2;
+    font-weight: 700;
+    animation: titleGlow 4s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% {
+        text-shadow: 
+            0 0 20px rgba(212, 175, 55, 0.6),
+            0 0 40px rgba(212, 175, 55, 0.3),
+            0 0 60px rgba(212, 175, 55, 0.2),
+            0 0 15px rgba(255, 255, 255, 0.4),
+            0 0 30px rgba(0, 0, 0, 0.8);
+    }
+    50% {
+        text-shadow: 
+            0 0 30px rgba(212, 175, 55, 0.8),
+            0 0 50px rgba(212, 175, 55, 0.4),
+            0 0 80px rgba(212, 175, 55, 0.3),
+            0 0 20px rgba(255, 255, 255, 0.6),
+            0 0 30px rgba(0, 0, 0, 0.8);
+    }
 }
 
 .sous-titre {
     font-family: 'Cinzel', serif;
     font-size: clamp(1em, 3vw, 1.8em);
     letter-spacing: 6px;
-    color: var(--gold);
-    font-weight: 300;
+    color: var(--gold-bright);
+    font-weight: 400;
     text-transform: uppercase;
-    margin-top: 10px;
+    margin-top: 20px;
+    animation: subtitleFlow 3s ease-in-out infinite;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+@keyframes subtitleFlow {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
 }
 
 .citation {
     font-style: italic;
     font-size: 1.1em;
-    color: #b3b3b3;
-    opacity: 0.95;
+    color: #c9a86a;
+    opacity: 1;
     letter-spacing: 2px;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
     font-family: 'Georgia', serif;
     font-weight: 300;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    animation: citationFloat 4s ease-in-out infinite;
 }
 
 .scroll-indicator {
@@ -201,6 +287,11 @@ h1 {
     100% { transform: translateY(0); opacity: 0.6; }
 }
 
+@keyframes citationFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 @keyframes eternite {
     0% {
         filter: hue-rotate(0deg) sepia(0) brightness(1);
@@ -213,6 +304,168 @@ h1 {
     100% {
         filter: hue-rotate(0deg) sepia(0) brightness(1);
         transform: scale(1);
+    }
+}
+
+/* =========================================
+   PRESTIGE SECTION (Premium Welcome)
+========================================= */
+.prestige-section {
+    background: linear-gradient(135deg, 
+                rgba(5, 5, 5, 0.95) 0%, 
+                rgba(15, 15, 15, 0.9) 50%, 
+                rgba(5, 5, 5, 0.95) 100%);
+    border-top: 2px solid rgba(212, 175, 55, 0.4);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+    padding: 100px 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.prestige-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.5), transparent);
+}
+
+.prestige-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.5), transparent);
+}
+
+.prestige-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.prestige-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.prestige-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.6), transparent);
+    max-width: 150px;
+}
+
+.prestige-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2em;
+    color: var(--gold-bright);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.prestige-content {
+    animation: fadeInUp 1s ease-out;
+}
+
+.prestige-text {
+    text-align: center;
+}
+
+.prestige-lead {
+    font-family: 'Georgia', serif;
+    font-size: 1.4em;
+    color: var(--gold-bright);
+    font-style: italic;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.prestige-description {
+    font-size: 1em;
+    color: #d4af9f;
+    line-height: 1.8;
+    margin-bottom: 50px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.prestige-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.feature {
+    padding: 30px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 3px;
+    transition: all 0.4s ease;
+    cursor: default;
+    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.05);
+}
+
+.feature:hover {
+    background: rgba(212, 175, 55, 0.12);
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 
+        0 10px 30px rgba(212, 175, 55, 0.2),
+        inset 0 0 20px rgba(212, 175, 55, 0.08);
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 4em;
+    display: block;
+    margin-bottom: 15px;
+    color: var(--gold-bright);
+    text-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.6),
+        0 0 40px rgba(212, 175, 55, 0.3);
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+    transition: all 0.3s ease;
+}
+
+.feature:hover .feature-icon {
+    font-size: 4.3em;
+    text-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.8),
+        0 0 60px rgba(212, 175, 55, 0.4);
+}
+
+.feature p {
+    color: #ccc;
+    font-size: 0.95em;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+}
+
+.feature strong {
+    color: var(--gold-bright);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -233,6 +486,21 @@ h1 {
     color: var(--gold-bright);
     letter-spacing: 5px;
     text-transform: uppercase;
+    position: relative;
+    padding-bottom: 30px;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--gold-bright), transparent);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
 }
 
 .filters-container {
@@ -246,28 +514,31 @@ h1 {
 .btn-filter {
     padding: 12px 25px;
     background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(181, 148, 16, 0.4);
-    color: #b3b3b3;
+    border: 2px solid var(--gold);
+    color: var(--gold-bright);
     text-transform: uppercase;
     font-family: 'Cinzel', serif;
     font-size: 0.9em;
     letter-spacing: 2px;
     transition: all 0.3s ease;
     border-radius: 3px;
+    font-weight: 600;
 }
 
 .btn-filter:hover {
-    border-color: #b59410;
+    border-color: var(--gold-bright);
     color: #fff;
-    box-shadow: 0 0 15px rgba(181, 148, 16, 0.3);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 .btn-filter.active {
-    background: #b59410;
-    color: #0a0a0a;
-    border-color: #b59410;
+    background: rgba(212, 175, 55, 0.2);
+    color: #fff;
+    border-color: var(--gold-bright);
     font-weight: bold;
-    box-shadow: 0 0 20px rgba(181, 148, 16, 0.5);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
 .product-grid {
@@ -280,18 +551,40 @@ h1 {
 
 .produit-card {
     background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(5, 5, 5, 1));
-    border: 2px solid rgba(181, 148, 16, 0.4);
+    border: 2px solid rgba(212, 175, 55, 0.4);
     padding: 40px 25px;
-    transition: 0.5s ease;
+    transition: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     text-align: center;
     position: relative;
-    box-shadow: inset 0 0 20px rgba(181, 148, 16, 0.1);
+    box-shadow: 
+        inset 0 0 25px rgba(212, 175, 55, 0.08),
+        0 5px 20px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(212, 175, 55, 0.05);
+}
+
+.produit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.produit-card:hover::before {
+    opacity: 1;
 }
 
 .produit-card:hover {
-    border-color: var(--gold);
-    transform: translateY(-10px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+    border-color: var(--gold-bright);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 
+        0 20px 60px rgba(212, 175, 55, 0.25),
+        inset 0 0 25px rgba(212, 175, 55, 0.15);
 }
 
 .category-badge {
@@ -339,19 +632,27 @@ h1 {
 
 .product-info h3 {
     font-family: 'Cinzel', serif;
-    color: #fff;
+    color: var(--gold-bright);
     font-size: 1.4em;
     min-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    transition: all 0.3s ease;
+}
+
+.produit-card:hover .product-info h3 {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
 }
 
 .product-info .description {
     font-size: 0.85em;
     color: #999;
-    line-height: 1.6;
+    line-height: 1.8;
     margin: 15px 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -359,33 +660,59 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 4.8em;
+    letter-spacing: 0.3px;
 }
 
 .price {
     display: block;
     margin-top: 20px;
-    font-size: 1.5em;
+    margin-bottom: 10px;
+    font-size: 1.6em;
     font-family: 'Cinzel', serif;
     color: var(--gold-bright);
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    font-weight: 700;
 }
 
 .btn-gold {
     display: inline-block;
-    padding: 14px 35px;
-    border: 1px solid var(--gold);
-    color: var(--gold);
+    padding: 14px 40px;
+    border: 2px solid var(--gold-bright);
+    color: var(--gold-bright);
     text-transform: uppercase;
     letter-spacing: 2px;
-    transition: 0.4s;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     background: transparent;
     margin-top: 25px;
     font-family: 'Cinzel', serif;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.btn-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gold-bright);
+    transition: left 0.4s ease;
+    z-index: -1;
+}
+
+.btn-gold:hover::before {
+    left: 0;
 }
 
 .btn-gold:hover {
-    background: var(--gold);
     color: #000;
-    box-shadow: 0 0 15px var(--gold);
+    text-shadow: none;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    transform: scale(1.05);
 }
 
 /* =========================================
@@ -394,7 +721,10 @@ h1 {
 .forest-section {
     background: var(--deep-black);
     padding: 100px 50px;
-    border-top: 1px solid rgba(181, 148, 16, 0.3);
+    border-top: 2px solid rgba(212, 175, 55, 0.3);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.05);
 }
 
 .forest-content {
@@ -407,15 +737,17 @@ h1 {
 
 .forest-text {
     flex: 1;
-    color: #ccc;
+    color: #d4af9f;
     line-height: 1.8;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
 }
 
 .forest-text h3 {
     font-family: 'Cinzel', serif;
-    color: var(--gold);
-    font-size: 1.8em;
+    color: var(--gold-bright);
+    font-size: 2em;
     margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
 .gold-list {
@@ -451,8 +783,8 @@ h1 {
     right: 30px;
     width: 55px;
     height: 55px;
-    background: rgba(181, 148, 16, 0.1);
-    border: 2px solid var(--gold);
+    background: rgba(212, 175, 55, 0.15);
+    border: 2px solid var(--gold-bright);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -462,11 +794,13 @@ h1 {
     visibility: hidden;
     transition: 0.3s;
     z-index: 999;
+    font-size: 1.3em;
 }
 
 .scroll-to-top:hover {
-    background: rgba(181, 148, 16, 0.3);
-    box-shadow: 0 0 20px rgba(181, 148, 16, 0.5);
+    background: rgba(212, 175, 55, 0.25);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    transform: translateY(-3px);
 }
 
 .scroll-to-top.visible {
@@ -502,9 +836,12 @@ body.admin-body {
     max-width: 1000px;
     margin: 50px auto;
     background: rgba(15, 15, 15, 0.95);
-    border: 2px solid rgba(181, 148, 16, 0.4);
+    border: 3px solid rgba(212, 175, 55, 0.5);
     padding: 40px;
-    box-shadow: 0 0 50px rgba(0,0,0,1), inset 0 0 20px rgba(181, 148, 16, 0.05);
+    box-shadow: 
+        0 0 50px rgba(0,0,0,1), 
+        inset 0 0 30px rgba(212, 175, 55, 0.08),
+        0 0 30px rgba(212, 175, 55, 0.1);
     border-radius: 5px;
 }
 
@@ -512,12 +849,13 @@ body.admin-body {
     font-family: 'Cinzel', serif;
     color: var(--gold-bright);
     text-align: center;
-    border-bottom: 2px solid rgba(181, 148, 16, 0.4);
+    border-bottom: 3px solid var(--gold-bright);
     padding-bottom: 25px;
     margin-bottom: 40px;
     text-transform: uppercase;
     letter-spacing: 5px;
     font-size: 2em;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
 .admin-section {
@@ -554,7 +892,7 @@ body.admin-body {
 .crypt-form select, 
 .crypt-form textarea {
     background: rgba(20, 20, 20, 0.8);
-    border: 1px solid rgba(181, 148, 16, 0.3);
+    border: 2px solid rgba(181, 148, 16, 0.3);
     color: #fff;
     padding: 12px 15px;
     font-family: 'Georgia', serif;
@@ -566,9 +904,9 @@ body.admin-body {
 .crypt-form input:focus, 
 .crypt-form select:focus, 
 .crypt-form textarea:focus {
-    border-color: var(--gold);
+    border-color: var(--gold-bright);
     outline: none;
-    box-shadow: 0 0 15px rgba(181, 148, 16, 0.3);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     background: rgba(20, 20, 20, 1);
 }
 
@@ -578,9 +916,9 @@ body.admin-body {
 }
 
 .btn-crypt {
-    background: linear-gradient(135deg, rgba(181, 148, 16, 0.2), rgba(181, 148, 16, 0.1));
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(181, 148, 16, 0.1));
     color: var(--gold-bright);
-    border: 2px solid var(--gold);
+    border: 2px solid var(--gold-bright);
     padding: 15px 40px;
     cursor: pointer;
     font-family: 'Cinzel', serif;
@@ -591,12 +929,13 @@ body.admin-body {
     font-weight: bold;
     font-size: 1em;
     margin-top: 20px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .btn-crypt:hover {
-    background: var(--gold);
+    background: var(--gold-bright);
     color: #000;
-    box-shadow: 0 0 25px rgba(181, 148, 16, 0.7);
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.8);
     transform: translateY(-2px);
 }
 

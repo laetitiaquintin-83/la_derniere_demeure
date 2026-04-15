@@ -39,6 +39,13 @@ if ($produit) {
         $_SESSION['panier'] = [];
     }
 
+    // SÉCURITÉ: Limiter la quantité par article (max 10 unités)
+    $quantity = isset($_SESSION['panier'][$id]) ? $_SESSION['panier'][$id] : 0;
+    if ($quantity >= 10) {
+        echo json_encode(['success' => false, 'message' => 'Limite atteinte : maximum 10 unités par article.']);
+        exit;
+    }
+
     // Ajouter un exemplaire ou créer l'entrée
     if (isset($_SESSION['panier'][$id])) {
         $_SESSION['panier'][$id]++;

@@ -26,8 +26,8 @@
 
         <div class="footer-section">
             <h4>Contact</h4>
-            <p>📍 Villeneuve d’Ascq</p>
-            <p>📞 03 20 61 71 51</p>
+            <p><span class="footer-icon">◆</span> Villeneuve d'Ascq</p>
+            <p><span class="footer-icon">❋</span> 03 20 61 71 51</p>
         </div>
     </div>
     
@@ -99,5 +99,13 @@
         border-top: 1px solid #1a1a1a;
         font-size: 0.8rem;
         color: #555;
+    }
+
+    .footer-icon {
+        color: #d4af37;
+        font-size: 1.2em;
+        margin-right: 8px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
     }
 </style>

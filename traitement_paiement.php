@@ -13,9 +13,61 @@ if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
     die("Erreur de sécurité : le sceau de la requête est corrompu.");
 }
 
-// Validation basique des champs du formulaire (pour montrer au jury qu'on contrôle les entrées)
+// ==========================================
+// VALIDATION SÉCURISÉE DES DONNÉES PAIEMENT
+// ==========================================
+
+// Fonction de validation: Algorithme Luhn (carte bancaire)
+function valideeLuhn($numero) {
+    $numero = preg_replace('/\D/', '', $numero);
+    if (!preg_match('/^[0-9]{13,19}$/', $numero)) return false;
+    
+    $sum = 0;
+    $parity = strlen($numero) % 2;
+    for ($i = 0; $i < strlen($numero); $i++) {
+        $digit = (int)$numero[$i];
+        if ($i % 2 == $parity) $digit *= 2;
+        if ($digit > 9) $digit -= 9;
+        $sum += $digit;
+    }
+    return ($sum % 10) == 0;
+}
+
+// Validation basique des champs du formulaire
 if (empty($_POST['nom_titulaire']) || empty($_POST['numero_carte'])) {
     die("Erreur : Les informations du rituel d'engagement sont incomplètes.");
+}
+
+// VALIDATION SÉCURISÉE: Numéro de carte (Luhn algorithm)
+$numero_carte = preg_replace('/\D/', '', $_POST['numero_carte'] ?? '');
+if (!valideeLuhn($numero_carte)) {
+    die("Erreur de sécurité : Numéro de carte invalide (non conforme Luhn).");
+}
+
+// VALIDATION SÉCURISÉE: Date d'expiration (format MM/YY)
+$date_exp = $_POST['date_expiration'] ?? '';
+if (!preg_match('/^(0[1-9]|1[0-2])\/\d{2}$/', $date_exp)) {
+    die("Erreur de sécurité : Format date invalide. Utilisez MM/YY.");
+}
+// Vérifier que la carte n'est pas expirée
+list($mois, $year2) = explode('/', $date_exp);
+$year_complet = 2000 + (int)$year2;
+$mois_courant = (int)date('m');
+$year_courant = (int)date('Y');
+if ($year_complet < $year_courant || ($year_complet == $year_courant && $mois < $mois_courant)) {
+    die("Erreur de sécurité : Carte expirée.");
+}
+
+// VALIDATION SÉCURISÉE: CVV (3-4 chiffres)
+$cvv = preg_replace('/\D/', '', $_POST['cvv'] ?? '');
+if (!preg_match('/^[0-9]{3,4}$/', $cvv)) {
+    die("Erreur de sécurité : CVV invalide. Doit être 3-4 chiffres.");
+}
+
+// VALIDATION SÉCURISÉE: Nom du titulaire
+$nom_titulaire = preg_replace('/[^a-zA-Zéèê\s\-\']/', '', $_POST['nom_titulaire']);
+if (strlen($nom_titulaire) < 3 || strlen($nom_titulaire) > 50) {
+    die("Erreur : Nom du titulaire invalide.");
 }
 
 // On vérifie qu'il y a bien quelque chose à commander

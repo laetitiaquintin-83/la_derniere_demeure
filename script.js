@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Boutons trouvés:', boutonsAjout.length);
     console.log('Toast element:', document.getElementById('toast'));
 
+    // SÉCURITÉ: Rate limiting pour éviter les abus/DOS via AJAX
+    let lastAddTime = 0;
+    const RATE_LIMIT_MS = 500; // Minimum 500ms entre deux clics
+
     // Récupération du jeton CSRF depuis la balise meta (à ajouter dans ton HTML)
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
@@ -14,6 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
         bouton.addEventListener('click', function(evenement) {
             evenement.preventDefault();
             console.log('Bouton cliqué !');
+
+            // SÉCURITÉ: Vérifier le rate limit
+            const currentTime = Date.now();
+            if (currentTime - lastAddTime < RATE_LIMIT_MS) {
+                showToast("Veuillez patienter avant votre prochaine offrande.", true);
+                return;
+            }
+            lastAddTime = currentTime;
 
             const idProduit = this.getAttribute('data-id');
             

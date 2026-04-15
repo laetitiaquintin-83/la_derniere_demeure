@@ -110,16 +110,16 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
-            <a href="index.php">🏠 Accueil</a>
-            <a href="images/catalogue.php">📜 Le Catalogue</a>
-            <a href="images/foret.php">🌿 Le Sanctuaire</a>
-            <a href="ceremonies.php" class="active" style="color: #D4AF37;">🕯️ L'Art de l'Adieu</a>
-            <a href="contact.php">📞 Conciergerie</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="index.php">✦ Accueil</a>
+            <a href="images/catalogue.php">✿ Le Catalogue</a>
+            <a href="images/foret.php">✾ Le Sanctuaire</a>
+            <a href="ceremonies.php" class="active" style="color: #D4AF37;">❦ L'Art de l'Adieu</a>
+            <a href="contact.php">❋ Conciergerie</a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
             <?php if(isset($_SESSION['user_id'])): ?>
-                <a href="logout.php" class="lock-link">🔓 Quitter</a>
+                <a href="logout.php" class="lock-link">◇ Quitter</a>
             <?php else: ?>
-                <a href="login.php" class="lock-link">🔒 Entrer</a>
+                <a href="login.php" class="lock-link">◆ Entrer</a>
             <?php endif; ?>
         </nav>
     </header>

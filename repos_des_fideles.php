@@ -376,10 +376,10 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     <header class="hero-section animal-hero">
         <nav>
             <a href="index.php">🏠 Accueil</a>
-            <a href="images/catalogue.php">📜 Le Catalogue</a>
+            <a href="images/catalogue.php">✿ Catalogue</a>
             <a href="images/foret.php">🌿 Le Sanctuaire</a>
             <a href="repos_des_fideles.php" class="active">🐾 Repos des Fidèles</a>
-            <a href="contact.php">📞 Conciergerie</a>
+            <a href="contact.php">❋ Conciergerie</a>
             <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
         
@@ -479,9 +479,9 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
                                 
                                 <span class="urne-price"><?php echo number_format($urne['prix'], 2, ',', ' '); ?> €</span>
                                 <a href="#" class="btn-add-cart btn-urne" 
-                                   data-id="<?php echo $urne['id']; ?>" 
+                                   data-id="<?php echo htmlspecialchars($urne['id']); ?>" 
                                    data-nom="<?php echo htmlspecialchars($urne['nom']); ?>" 
-                                   data-prix="<?php echo $urne['prix']; ?>">
+                                   data-prix="<?php echo htmlspecialchars($urne['prix']); ?>">
                                    Ajouter à l'Offrande
                                 </a>
                             </div>

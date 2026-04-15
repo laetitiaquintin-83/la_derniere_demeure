@@ -125,8 +125,8 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
                     </td>
                     <td>
                         <div class="actions-cell">
-                            <a href="modifier.php?id=<?php echo $p['id']; ?>" class="btn-modify">Refaçonner</a>
-                            <a href="supprimer.php?id=<?php echo $p['id']; ?>&token=<?php echo genererTokenCSRF(); ?>" class="btn-delete" onclick="return confirm('Êtes-vous certain de vouloir anéantir cette relique ?');">Anéantir</a>
+                            <a href="modifier.php?id=<?php echo htmlspecialchars($p['id']); ?>" class="btn-modify">Refaçonner</a>
+                            <a href="supprimer.php?id=<?php echo htmlspecialchars($p['id']); ?>&token=<?php echo htmlspecialchars(genererTokenCSRF()); ?>" class="btn-delete" onclick="return confirm('Êtes-vous certain de vouloir anéantir cette relique ?');">Anéantir</a>
                         </div>
                     </td>
                 </tr>

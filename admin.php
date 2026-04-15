@@ -58,24 +58,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             if (!file_exists($target_dir)) { mkdir($target_dir, 0777, true); }
 
             $file_extension = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
-            $file_name = time() . "_" . bin2hex(random_bytes(4)) . "." . $file_extension;
-            $target_file = $target_dir . $file_name;
-
-            if (!in_array($_FILES["image"]["type"], ['image/jpeg', 'image/png', 'image/webp'])) {
-                $message = "Erreur : formats acceptés JPG, PNG ou WebP uniquement.";
+            
+            // SÉCURITÉ: Extensions blanches seulement
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+            if (!in_array($file_extension, $allowed_extensions)) {
+                $message = "Erreur : formats acceptés JPG, PNG, WebP uniquement.";
                 $messageType = "error";
             } else {
-                if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                    try {
-                        $sql = "INSERT INTO catalogue_funeraire (nom, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?)";
-                        $stmt = $pdo->prepare($sql);
-                        $stmt->execute([$nom, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
-                        $message = "L'article « $nom » a été ajouté avec succès.";
-                        $messageType = "success";
-                    } catch (PDOException $e) {
-                        if (file_exists($target_file)) { unlink($target_file); }
-                        $message = "Erreur SQL : " . $e->getMessage();
+                // SÉCURITÉ: Vérifier la VRAIE MIME type (côté serveur, pas le header du client)
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $real_mime = finfo_file($finfo, $_FILES["image"]["tmp_name"]);
+                finfo_close($finfo);
+                
+                $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!in_array($real_mime, $allowed_mimes)) {
+                    $message = "Erreur de sécurité : Le fichier uploadé n'est pas une image valide.";
+                    $messageType = "error";
+                } else {
+                    // SÉCURITÉ: Vérifier que la taille est raisonnable (max 5MB)
+                    if ($_FILES["image"]["size"] > 5 * 1024 * 1024) {
+                        $message = "Erreur : La taille du fichier dépasse 5MB.";
                         $messageType = "error";
+                    } else {
+                        $file_name = time() . "_" . bin2hex(random_bytes(4)) . "." . $file_extension;
+                        $target_file = $target_dir . $file_name;
+                        
+                        // SÉCURITÉ: Résoudre et valider le chemin final
+                        $real_path = realpath($target_dir) . DIRECTORY_SEPARATOR . $file_name;
+                        if (strpos($real_path, realpath($target_dir)) !== 0) {
+                            $message = "Erreur de sécurité : Chemin invalide (tentative de traversée répertoire).";
+                            $messageType = "error";
+                        } elseif (move_uploaded_file($_FILES["image"]["tmp_name"], $real_path)) {
+                            try {
+                                $sql = "INSERT INTO catalogue_funeraire (nom, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?)";
+                                $stmt = $pdo->prepare($sql);
+                                $stmt->execute([$nom, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
+                                $message = "L'article « $nom » a été ajouté avec succès.";
+                                $messageType = "success";
+                            } catch (PDOException $e) {
+                                if (file_exists($target_file)) { unlink($target_file); }
+                                $message = "Erreur SQL : " . $e->getMessage();
+                                $messageType = "error";
+                            }
+                        }
                     }
                 }
             }

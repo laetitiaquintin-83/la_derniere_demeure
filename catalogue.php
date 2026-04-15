@@ -50,11 +50,11 @@ $categories_db = $categories_avec_titre;
 <body class="admin-body"> 
     <header class="admin-nav">
         <nav>
-            <a href="../index.php">🏠 Accueil</a>
+            <a href="../index.php">✦ Accueil</a>
             <a href="catalogue.php" class="active">📜 Le Catalogue</a>
-            <a href="foret.php">🌿 Le Sanctuaire</a>
-            <a href="../ceremonies.php">🕯️ L'Art de l'Adieu</a>
-            <a href="../contact.php">📞 Conciergerie</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
+            <a href="../ceremonies.php">❦ L'Art de l'Adieu</a>
+            <a href="../contact.php">❋ Conciergerie</a>
             <a href="../panier.php" style="margin-left: auto;">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
@@ -74,7 +74,13 @@ $categories_db = $categories_avec_titre;
 
         <?php
         // 3. Logique d'affichage : catégorie filtrée ou tout
-        $categories_to_show = (isset($_GET['cat']) && !empty($_GET['cat'])) ? [$_GET['cat']] : $categories_db;
+        // Sécurité: valider que la catégorie existe dans la liste blanche de catégories
+        $categories_to_show = $categories_db;
+        if (isset($_GET['cat']) && !empty($_GET['cat'])) {
+            if (in_array($_GET['cat'], $categories_db)) {
+                $categories_to_show = [$_GET['cat']];
+            }
+        }
 
         foreach ($categories_to_show as $cat) :
             $titre = $titres_poetiques[$cat] ?? $cat; 
@@ -117,9 +123,9 @@ $categories_db = $categories_avec_titre;
                                 
                                 <span class="price"><?php echo number_format($p['prix'], 2, ',', ' '); ?> €</span>
                                 <a href="#" class="btn-gold btn-add-cart" 
-                                   data-id="<?php echo $p['id']; ?>" 
+                                   data-id="<?php echo htmlspecialchars($p['id']); ?>" 
                                    data-nom="<?php echo htmlspecialchars($p['nom']); ?>" 
-                                   data-prix="<?php echo $p['prix']; ?>">
+                                   data-prix="<?php echo htmlspecialchars($p['prix']); ?>">
                                    Ajouter à l'Offrande
                                 </a>
                             </div>
