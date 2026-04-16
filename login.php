@@ -13,22 +13,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Erreur de sécurité : Jeton invalide. Le sceau a été corrompu.");
     }
 
+    // 1.5 RATE LIMITING: Vérifier pas trop de tentatives
+    $rate_limit = check_rate_limit('login_admin', 5, 300);
+    if (!$rate_limit['allowed']) {
+        http_response_code(429);
+        die("⏳ Trop de tentatives. Réessayez plus tard.");
+    }
+
     // SÉCURITÉ: Récupération sécurisée du mot de passe saisi
     $username = trim($_POST['username'] ?? 'admin');
     $mdp_saisi = $_POST['mot_de_passe'] ?? '';
     
     // 2. Vérifier les credentials en base de données (SÉCURITÉ MAXIMALE)
     try {
-        $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE username = ? LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id, password_hash FROM admin_users WHERE username = ? LIMIT 1");
         $stmt->execute([$username]);
         $result = $stmt->fetch();
         
         if ($result && password_verify($mdp_saisi, $result['password_hash'])) {
-            // Protection contre la fixation de session (Excellente pratique pour l'examen)
+            // ✓ Connexion réussie: réinitialiser le rate limit
+            reset_rate_limit('login_admin');
+            
+            // Protection contre la fixation de session
             session_regenerate_id(true);
 
             // Le mot de passe est bon, on donne la clé d'accès
             $_SESSION['admin_connecte'] = true;
+            log_audit_event('LOGIN_SUCCESS', 'admin_auth', (int)($result['id'] ?? 0), null, ['username' => $username]);
             
             // On redirige vers le registre
             header('Location: admin.php');
@@ -107,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <header class="admin-nav">
         <nav>
-            <a href="index.php">Retourner au Sanctuaire</a>
+            <a href="index.php">✦ Retourner au Sanctuaire</a>
         </nav>
     </header>
 

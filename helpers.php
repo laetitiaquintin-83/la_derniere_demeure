@@ -249,3 +249,120 @@ function validate_quantity($quantity, $max = CART_ITEM_MAX_QUANTITY) {
     $qty = (int)$quantity;
     return $qty > 0 && $qty <= $max;
 }
+
+// ==========================================
+// RATE LIMITING - Prévenir brute force
+// ==========================================
+
+/**
+ * Vérifie et enregistre les tentatives (rate limiting)
+ * Prévient les attaques par brute force
+ * @param string $key Clé unique (ex: "login_admin")
+ * @param int $maxAttempts Nombre max de tentatives
+ * @param int $windowSeconds Fenêtre de temps
+ * @return array ['allowed' => bool, 'attempts' => int, 'wait_seconds' => int]
+ */
+function check_rate_limit($key, $maxAttempts = 5, $windowSeconds = 300) {
+    if (!isset($_SESSION['rate_limit'])) {
+        $_SESSION['rate_limit'] = [];
+    }
+    
+    $currentTime = time();
+    $sessionKey = 'rate_limit_' . md5($key);
+    
+    if (!isset($_SESSION['rate_limit'][$sessionKey])) {
+        $_SESSION['rate_limit'][$sessionKey] = [
+            'attempts' => 0,
+            'window_start' => $currentTime,
+            'blocked_until' => 0
+        ];
+    }
+    
+    $record = &$_SESSION['rate_limit'][$sessionKey];
+    
+    // Si bloqué
+    if ($currentTime < $record['blocked_until']) {
+        $waitSeconds = $record['blocked_until'] - $currentTime;
+        return [
+            'allowed' => false,
+            'attempts' => $record['attempts'],
+            'wait_seconds' => $waitSeconds
+        ];
+    }
+    
+    // Si fenêtre expirée
+    if ($currentTime - $record['window_start'] > $windowSeconds) {
+        $record['attempts'] = 0;
+        $record['window_start'] = $currentTime;
+        $record['blocked_until'] = 0;
+    }
+    
+    $record['attempts']++;
+    
+    // Si limite atteinte
+    if ($record['attempts'] > $maxAttempts) {
+        $record['blocked_until'] = $currentTime + 300;
+        error_log("Rate limit dépassé: $key");
+        return [
+            'allowed' => false,
+            'attempts' => $record['attempts'],
+            'wait_seconds' => 300
+        ];
+    }
+    
+    return [
+        'allowed' => true,
+        'attempts' => $record['attempts'],
+        'wait_seconds' => 0
+    ];
+}
+
+/**
+ * Réinitialise le rate limit après succès
+ * @param string $key Clé du rate limit
+ */
+function reset_rate_limit($key) {
+    $sessionKey = 'rate_limit_' . md5($key);
+    if (isset($_SESSION['rate_limit'][$sessionKey])) {
+        unset($_SESSION['rate_limit'][$sessionKey]);
+    }
+}
+
+/**
+ * Enregistre un événement de sécurité dans la table d'audit.
+ * @param string $action
+ * @param string $resourceType
+ * @param string|int|null $resourceId
+ * @param mixed $oldValues
+ * @param mixed $newValues
+ * @return bool
+ */
+function log_audit_event($action, $resourceType, $resourceId = null, $oldValues = null, $newValues = null) {
+    global $pdo;
+
+    if (!isset($pdo) || !($pdo instanceof PDO)) {
+        return false;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            "INSERT INTO audit_log (action, resource_type, resource_id, actor, ip_address, old_values, new_values)
+             VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->execute([
+            $action,
+            $resourceType,
+            $resourceId !== null ? (string)$resourceId : null,
+            $_SESSION['admin_connecte'] ? 'admin' : 'public',
+            $_SERVER['REMOTE_ADDR'] ?? null,
+            $oldValues !== null ? json_encode($oldValues, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null,
+            $newValues !== null ? json_encode($newValues, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null,
+        ]);
+
+        return true;
+    } catch (Throwable $e) {
+        error_log('Audit log error: ' . $e->getMessage());
+        return false;
+    }
+}

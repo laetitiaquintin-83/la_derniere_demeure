@@ -20,15 +20,15 @@ if (!isset($data['csrf_token']) || !validerTokenCSRF($data['csrf_token'])) {
     exit;
 }
 
-// 3. Validation de l'ID de la relique
+// 3. Validation de l'ID de l'article
 if (!isset($data['id']) || !ctype_digit(strval($data['id']))) {
-    echo json_encode(['success' => false, 'message' => 'Relique introuvable ou format invalide.']);
+    echo json_encode(['success' => false, 'message' => 'Article introuvable ou format invalide.']);
     exit;
 }
 
 $id = (int)$data['id'];
 
-// 4. On vérifie que la relique existe bien dans le registre
+// 4. On vérifie que l'article existe bien dans le registre
 $stmt = $pdo->prepare("SELECT nom FROM catalogue_funeraire WHERE id = ?");
 $stmt->execute([$id]);
 $produit = $stmt->fetch();
@@ -63,5 +63,5 @@ if ($produit) {
         'total' => $totalArticles
     ]);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Cette relique s\'est évaporée des registres.']);
+    echo json_encode(['success' => false, 'message' => 'Cet article s\'est évaporé des registres.']);
 }

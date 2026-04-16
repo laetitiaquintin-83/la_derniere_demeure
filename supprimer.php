@@ -16,7 +16,7 @@ if (!isset($_GET['token']) || !validerTokenCSRF($_GET['token'])) {
 
 // 3. VALIDATION DE L'ID
 if (!isset($_GET['id']) || !ctype_digit(strval($_GET['id']))) {
-    die("Erreur : L'identifiant de la relique est corrompu.");
+    die("Erreur : L'identifiant de l'article est corrompu.");
 }
 
 $id = (int)$_GET['id'];
@@ -28,7 +28,7 @@ try {
     $produit = $stmt->fetch();
 
     if (!$produit) {
-        die("La relique a déjà rejoint le néant...");
+        die("L'article a déjà rejoint le néant...");
     }
 
     // 5. SUPPRESSION PHYSIQUE DE L'IMAGE
@@ -47,5 +47,5 @@ try {
 
 } catch (PDOException $e) {
     error_log("Erreur lors de l'anéantissement : " . $e->getMessage());
-    die("Une force obscure a empêché la suppression de la relique.");
+    die("Une force obscure a empêché la suppression de l'article.");
 }

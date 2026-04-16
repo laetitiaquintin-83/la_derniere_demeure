@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once '../config.php'; 
+require_once 'config.php'; 
 
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
 ?>
@@ -11,7 +11,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo genererTokenCSRF(); ?>">
     <title>Le Sanctuaire des Racines | La Dernière Demeure</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
         /* Styles d'immersion (similaires à cérémonies) */
@@ -81,16 +81,16 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 20;">
         <nav>
-            <a href="../index.php">✦ Accueil</a>
+            <a href="index.php">✦ Accueil</a>
             <a href="catalogue.php">✿ Catalogue</a>
             <a href="foret.php" class="active" style="color: #D4AF37;">✾ Le Sanctuaire</a>
-            <a href="../ceremonies.php">L'Art de l'Adieu</a>
-            <a href="../contact.php">Conciergerie</a>
-            <a href="../panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
+            <a href="contact.php">❋ Conciergerie</a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 
-    <section style="height: 80vh; background: url('foret-hero-canopee.jpg') center/cover fixed; display: flex; align-items: center; justify-content: center; position: relative;">
+    <section style="height: 80vh; background: url('images/foret-hero-canopee.jpg') center/cover fixed; display: flex; align-items: center; justify-content: center; position: relative;">
         <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.9));"></div>
         <div style="position: relative; text-align: center; z-index: 1; padding: 0 20px;">
             <span class="script-font">L'Étreinte de l'Éternité</span>
@@ -110,7 +110,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p>Ici, point de futilité. L'urne, délicatement façonnée dans l'argile, le sel ou les fibres végétales, retourne doucement à la poussière. Elle est confiée au sol, tout contre les racines d'un arbre protecteur.</p>
             <p style="margin-top: 15px; color: #888;">Ce geste ancestral transforme le deuil en une croissance éternelle vers la lumière céleste. La vie ne s'arrête pas, elle se diffuse dans l'écosystème entier.</p>
         </div>
-        <div class="foret-image" style="background-image: url('foret-rite-terre.jpg');"></div>
+        <div class="foret-image" style="background-image: url('images/foret-rite-terre.jpg');"></div>
     </section>
 
     <section class="poetry-box">
@@ -125,22 +125,22 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p>Ce voyage, bien que mystique, s'inscrit dans un cadre solennel et pérenne. En France, ces bois du souvenir — à l'image des sanctuaires d'Arbas ou de Nancy — sont les gardiens de votre tranquillité.</p>
             <p style="margin-top: 15px; color: #888;">La loi et la nature veillent ensemble, assurant que votre repos sera aussi immuable et sacré que le cycle éternel des saisons.</p>
         </div>
-        <div class="foret-image" style="background-image: url('foret-repos-souverain.jpg');"></div>
+        <div class="foret-image" style="background-image: url('images/foret-repos-souverain.jpg');"></div>
     </section>
 
     <section style="padding: 80px 5%; text-align: center; background: #000;">
         <div style="max-width: 800px; margin: 0 auto; border: 1px dashed #D4AF37; padding: 40px;">
             <h3 style="color: #D4AF37; font-family: 'Cinzel', serif; font-size: 1.8em; margin-bottom: 20px;">Organiser ce dernier voyage</h3>
             <p style="color: #ccc; margin-bottom: 30px;">Nos conseillers vous accompagnent dans le choix de votre arbre de mémoire et l'organisation de ce rituel sylvestre.</p>
-            <a href="../contact.php" style="display: inline-block; padding: 12px 30px; background: transparent; border: 1px solid #D4AF37; color: #D4AF37; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; margin-right: 15px;">Écrire à la Conciergerie</a>
-            <a href="../index.php" style="display: inline-block; padding: 12px 30px; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;">Regagner la Demeure</a>
+            <a href="contact.php" style="display: inline-block; padding: 12px 30px; background: transparent; border: 1px solid #D4AF37; color: #D4AF37; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; margin-right: 15px;">❋ Écrire à la Conciergerie</a>
+            <a href="index.php" style="display: inline-block; padding: 12px 30px; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;">✦ Regagner la Demeure</a>
         </div>
     </section>
 
     <div id="toast" class="toast"></div>
 
-    <script src="../script.js"></script>
+    <script src="script.js"></script>
 
-    <?php include '../footer.php'; ?>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

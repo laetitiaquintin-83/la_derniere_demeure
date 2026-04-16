@@ -2,6 +2,11 @@
 // On inclut directement la config (qui gère la session et la connexion PDO)
 require_once 'config.php';
 
+// Endpoint historique désactivé: le paiement passe par create-checkout-session.php
+// pour éviter toute collecte locale de données carte.
+header('Location: panier.php');
+exit;
+
 // On vérifie que la requête vient bien du formulaire en POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
@@ -213,7 +218,7 @@ try {
             <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
             <div class="error-actions">
                 <a href="panier.php" class="btn-error">↻ Retour au Panier</a>
-                <a href="index.php" class="btn-error">🏠 Retour à l'Accueil</a>
+                <a href="index.php" class="btn-error">✦ Retour à l'Accueil</a>
             </div>
         </div>
     </div>
@@ -266,7 +271,7 @@ try {
 
     <header class="admin-nav">
         <nav>
-            <a href="index.php">Retourner à l'Accueil</a>
+            <a href="index.php">✦ Retourner à l'Accueil</a>
         </nav>
     </header>
 
@@ -277,7 +282,7 @@ try {
             Votre engagement a bien été enregistré dans nos registres.<br>
             Les préparatifs de votre commande commenceront à la tombée de la nuit.
         </p>
-        <a href="index.php" class="btn-gold" style="text-decoration: none; display: inline-block;">Retourner au Sanctuaire</a>
+        <a href="index.php" class="btn-gold" style="text-decoration: none; display: inline-block;">✦ Retourner au Sanctuaire</a>
     </div>
 
 </body>

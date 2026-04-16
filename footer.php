@@ -8,19 +8,19 @@
         <div class="footer-section">
             <h4>Navigation</h4>
             <ul>
-                <li><a href="index.php">Accueil</a></li>
-                <li><a href="foret.php">Le Sanctuaire</a></li>
-                <li><a href="repos_des_fideles.php">Repos des Fidèles</a></li>
-                <li><a href="catalogue.php">Le Catalogue</a></li>
+                <li><a href="index.php">✦ Accueil</a></li>
+                <li><a href="foret.php">✾ Le Sanctuaire</a></li>
+                <li><a href="repos_des_fideles.php">✤ Repos des Fidèles</a></li>
+                <li><a href="catalogue.php">✿ Le Catalogue</a></li>
             </ul>
         </div>
 
         <div class="footer-section">
             <h4>Informations</h4>
             <ul>
-                <li><a href="mentions-legales.php">Mentions Légales</a></li>
-                <li><a href="contact.php">Conciergerie</a></li>
-                <li><a href="login.php">Espace Gardien</a></li>
+                <li><a href="mentions-legales.php">⚖ Mentions Légales</a></li>
+                <li><a href="contact.php">❋ Conciergerie</a></li>
+                <li><a href="login.php">◆ Espace Gardien</a></li>
             </ul>
         </div>
 

@@ -375,12 +375,13 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
 <body>
     <header class="hero-section animal-hero">
         <nav>
-            <a href="index.php">🏠 Accueil</a>
-            <a href="images/catalogue.php">✿ Catalogue</a>
-            <a href="images/foret.php">🌿 Le Sanctuaire</a>
-            <a href="repos_des_fideles.php" class="active">🐾 Repos des Fidèles</a>
+            <a href="index.php" class="active">✦ Accueil</a>
+            <a href="catalogue.php">✿ Catalogue</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
+            <a href="repos_des_fideles.php">✤ Repos des Fidèles</a>
+            <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
             <a href="contact.php">❋ Conciergerie</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
         
         <div class="hero-content">
@@ -413,7 +414,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
         
         <div class="services-grid">
             <div class="service-card">
-                <h3>🌿 Place au Cœur de la Nature</h3>
+                <h3>✾ Place au Cœur de la Nature</h3>
                 <p>Le Repos des Fidèles n'est pas un simple cimetière animalier. C'est une extension de notre sanctuaire forestier où chaque compagnon retrouve le cycle naturel de la vie, sous la protection des grands arbres millénaires.</p>
             </div>
 
@@ -502,6 +503,9 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p style="font-style: italic; color: #888; margin-bottom: 30px;">Laissez une trace, un mot, une pensée pour ceux qui ne sont plus là.</p>
 
             <form action="traitement_jardin.php" method="POST" enctype="multipart/form-data" style="background: #111; padding: 30px; border: 1px solid #222; margin-top: 30px; margin-bottom: 50px;">
+                <!-- 🔐 TOKEN CSRF -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
+                
                 <div style="display: flex; gap: 15px; margin-bottom: 15px;">
                     <input type="text" name="nom_proprietaire" placeholder="Votre Nom" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white;">
                     <input type="text" name="nom_animal" placeholder="Nom de votre compagnon" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white;">

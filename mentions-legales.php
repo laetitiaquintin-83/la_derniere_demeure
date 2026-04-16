@@ -64,7 +64,7 @@ require_once 'config.php';
         </div>
 
         <div style="text-align: center; margin-top: 40px;">
-            <a href="index.php" class="btn-gold" style="text-decoration: none; padding: 10px 20px;">Retour au Sanctuaire</a>
+            <a href="index.php" class="btn-gold" style="text-decoration: none; padding: 10px 20px;">✦ Retour au Sanctuaire</a>
         </div>
     </div>
 

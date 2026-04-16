@@ -82,11 +82,11 @@ if (!empty($panier_session)) {
     <header class="admin-nav">
         <nav>
             <a href="index.php">✦ Accueil</a>
-            <a href="images/catalogue.php">✿ Catalogue</a>
-            <a href="images/foret.php">🌿 Le Sanctuaire</a>
-            <a href="ceremonies.php">❦ Art de l'Adieu</a>
+            <a href="catalogue.php">✿ Catalogue</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
+            <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
             <a href="contact.php">❋ Conciergerie</a>
-            <a href="panier.php" style="margin-left: auto;" class="active">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="panier.php" style="margin-left: auto;" class="active">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 
@@ -97,12 +97,12 @@ if (!empty($panier_session)) {
         <div class="checkout-grid">
             
             <div class="cart-summary">
-                <h2 class="checkout-title">Vos Reliques</h2>
+                <h2 class="checkout-title">Vos Articles</h2>
                 
                 <?php if (empty($panier_details)): ?>
-                    <p class="empty-cart">Votre offrande est vide. Aucune relique n'a encore été sélectionnée.</p>
+                    <p class="empty-cart">Votre offrande est vide. Aucun article n'a encore été sélectionné.</p>
                     <div style="text-align: center; margin-top: 20px;">
-                        <a href="images/catalogue.php" class="btn-gold" style="font-size: 0.8em; padding: 10px 20px;">Retourner au Catalogue</a>
+                        <a href="catalogue.php" class="btn-gold" style="font-size: 0.8em; padding: 10px 20px;">Retourner au Catalogue</a>
                     </div>
                 <?php else: ?>
                     <?php foreach ($panier_details as $article): ?>
@@ -113,7 +113,7 @@ if (!empty($panier_session)) {
                             </div>
                             <div class="cart-item-price">
                                 <?php echo number_format($article['sous_total'], 2, ',', ' '); ?> €
-                                <a href="?remove=<?php echo $article['id']; ?>&token=<?php echo genererTokenCSRF(); ?>" class="btn-remove" title="Retirer cette relique">×</a>
+                                <a href="?remove=<?php echo $article['id']; ?>&token=<?php echo genererTokenCSRF(); ?>" class="btn-remove" title="Retirer cet article">×</a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -128,36 +128,19 @@ if (!empty($panier_session)) {
             <?php if (!empty($panier_details)): ?>
             <div class="payment-form-container">
                 <h2 class="checkout-title">Sceau de l'Engagement</h2>
-                
-                <form action="traitement_paiement.php" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
-                    
-                    <div class="form-group">
-                        <label>Nom gravé sur le sceau (Titulaire)</label>
-                        <input type="text" name="nom_titulaire" class="checkout-input" placeholder="Ex: Jean Dupont" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Numéro d'engagement (Carte)</label>
-                        <input type="text" name="numero_carte" class="checkout-input" placeholder="0000 0000 0000 0000" maxlength="19" required>
-                    </div>
-                    
-                    <div class="card-row">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Expiration</label>
-                            <input type="text" name="date_expiration" class="checkout-input" placeholder="MM/AA" maxlength="5" required>
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Cryptogramme</label>
-                            <input type="text" name="cryptogramme" class="checkout-input" placeholder="123" maxlength="3" required>
-                        </div>
-                    </div>
 
-                    <button type="submit" class="btn-pay">Honorer le Passage (<?php echo number_format($total, 2, ',', ' '); ?> €)</button>
+                <form action="create-checkout-session.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
+
+                    <p style="color: #b3b3b3; line-height: 1.7; margin-bottom: 20px;">
+                        Le paiement est traité via une session sécurisée. Aucune donnée bancaire n'est saisie ni stockée sur ce site.
+                    </p>
+
+                    <button type="submit" class="btn-pay">Continuer vers le Paiement Sécurisé (<?php echo number_format($total, 2, ',', ' '); ?> €)</button>
                     
                     <div style="text-align: center; margin-top: 15px;">
                         <span style="color: #666; font-size: 0.8em; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                            🔒 Cérémonie scellée et chiffrée
+                            🔒 Session externe sécurisée
                         </span>
                     </div>
                 </form>

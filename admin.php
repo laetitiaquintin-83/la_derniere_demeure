@@ -11,19 +11,30 @@ $message = "";
 $messageType = ""; 
 
 // --- LOGIQUE DE MODÉRATION DU JARDIN DES SOUVENIRS ---
-if (isset($_GET['valider_message'])) {
-    $id = (int)$_GET['valider_message'];
-    $pdo->prepare("UPDATE livre_dor_animaux SET approuve = 1 WHERE id = ?")->execute([$id]);
-    $message = "La pensée a été scellée dans le Jardin.";
-    $messageType = "success";
-}
-
-if (isset($_GET['supprimer_message'])) {
-    $id = (int)$_GET['supprimer_message'];
-    // Optionnel : supprimer le fichier image du serveur si besoin avant la suppression SQL
-    $pdo->prepare("DELETE FROM livre_dor_animaux WHERE id = ?")->execute([$id]);
-    $message = "La pensée a été bannie du registre.";
-    $messageType = "error";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['moderation_action'])) {
+    if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
+        $message = "Erreur de sécurité : action de modération invalide.";
+        $messageType = "error";
+    } else {
+        $message_id = $_POST['message_id'] ?? '';
+        if (!ctype_digit((string)$message_id)) {
+            $message = "Identifiant de message invalide.";
+            $messageType = "error";
+        } elseif ($_POST['moderation_action'] === 'approve') {
+            $pdo->prepare("UPDATE livre_dor_animaux SET approuve = 1 WHERE id = ?")->execute([(int)$message_id]);
+            log_audit_event('APPROVE', 'livre_dor_animaux', (int)$message_id, null, ['approuve' => 1]);
+            $message = "La pensée a été scellée dans le Jardin.";
+            $messageType = "success";
+        } elseif ($_POST['moderation_action'] === 'delete') {
+            $stmt_old = $pdo->prepare("SELECT * FROM livre_dor_animaux WHERE id = ? LIMIT 1");
+            $stmt_old->execute([(int)$message_id]);
+            $old_message = $stmt_old->fetch(PDO::FETCH_ASSOC) ?: null;
+            $pdo->prepare("DELETE FROM livre_dor_animaux WHERE id = ?")->execute([(int)$message_id]);
+            log_audit_event('DELETE', 'livre_dor_animaux', (int)$message_id, $old_message, null);
+            $message = "La pensée a été bannie du registre.";
+            $messageType = "error";
+        }
+    }
 }
 
 // Génération du jeton CSRF
@@ -51,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             $message = "Erreur : tous les champs obligatoires doivent être complétés.";
             $messageType = "error";
         } elseif (!isset($_FILES["image"]) || $_FILES["image"]["error"] !== UPLOAD_ERR_OK) {
-            $message = "Erreur : une relique visuelle (image) est requise.";
+                $message = "Erreur : une image est requise.";
             $messageType = "error";
         } else {
             $target_dir = "images/catalogue/";
@@ -93,6 +104,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
                                 $sql = "INSERT INTO catalogue_funeraire (nom, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?)";
                                 $stmt = $pdo->prepare($sql);
                                 $stmt->execute([$nom, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
+                                log_audit_event('CREATE', 'catalogue_funeraire', $pdo->lastInsertId(), null, [
+                                    'nom' => $nom,
+                                    'categorie' => $categorie,
+                                    'prix' => (float)$prix,
+                                    'stock' => (int)$stock,
+                                    'image_path' => $target_file,
+                                ]);
                                 $message = "L'article « $nom » a été ajouté avec succès.";
                                 $messageType = "success";
                             } catch (PDOException $e) {
@@ -134,23 +152,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
         .form-row { display: flex; gap: 20px; }
         .form-row > div { flex: 1; }
         .message-card { background: #050505; border: 1px solid #222; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; }
+        .admin-quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 30px; }
+        .admin-quick-link {
+            display: block;
+            padding: 22px;
+            border: 1px solid rgba(212, 175, 55, 0.22);
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.06), rgba(5, 5, 5, 0.92));
+            color: #f1dfb0;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .admin-quick-link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(212, 175, 55, 0.45);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+        }
+        .admin-quick-link .label { display: block; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; color: #fff; }
+        .admin-quick-link .desc { display: block; color: #bda97a; line-height: 1.7; font-size: 0.95rem; }
     </style>
 </head>
 <body class="admin-body"> 
     
     <header class="admin-nav">
         <nav>
-            <a href="index.php">Accueil</a>
-            <a href="catalogue.php">Le Catalogue</a>
-            <a href="admin.php" class="active">Le Registre</a>
-            <a href="gestion.php">L'Inventaire</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande (<?php echo $nombre_articles; ?>)</a>
-            <a href="logout.php" style="color: #ff4c4c;">🔓 Quitter</a>
+            <a href="index.php">✦ Accueil</a>
+            <a href="catalogue.php">✿ Catalogue</a>
+            <a href="admin.php" class="active">◆ Registre</a>
+            <a href="gestion.php">✦ Inventaire</a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande (<?php echo $nombre_articles; ?>)</a>
+            <a href="logout.php" style="color: #ff4c4c;">◇ Quitter</a>
         </nav>
     </header>
 
     <div class="admin-container">
-        <h1 class="admin-title">Ajouter une Relique</h1>
+        <h1 class="admin-title">Panneau du Gardien</h1>
+        <div class="admin-quick-links">
+            <a href="admin.php" class="admin-quick-link">
+                <span class="label">◆ Registre</span>
+                <span class="desc">Gérer les articles, ajouter une nouvelle pièce et garder l’ensemble du catalogue sous contrôle.</span>
+            </a>
+            <a href="gestion.php" class="admin-quick-link">
+                <span class="label">✦ Inventaire</span>
+                <span class="desc">Consulter l’état du stock, modifier les fiches et retirer un article si nécessaire.</span>
+            </a>
+        </div>
+
+        <h1 class="admin-title">Ajouter un Article</h1>
         
         <?php if($message): ?>
             <div class="<?php echo ($messageType === 'success') ? 'success-box' : 'error-box'; ?>">
@@ -163,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             <input type="hidden" name="ajouter_article" value="1">
             
             <div class="form-group">
-                <label>Désignation de la Relique</label>
+                <label>Désignation de l'Article</label>
                 <input type="text" name="nom" required>
             </div>
             
@@ -195,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             </div>
             
             <div class="form-group">
-                <label>Relique Visuelle (Image)</label>
+                <label>Image de l'Article</label>
                 <input type="file" name="image" accept="image/*" required>
             </div>
             
@@ -214,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             foreach ($attente as $m): ?>
                 <div class="message-card">
                     <?php if($m['photo_path']): ?>
-                        <img src="<?php echo $m['photo_path']; ?>" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--gold);">
+                        <img src="<?php echo htmlspecialchars($m['photo_path']); ?>" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--gold);">
                     <?php endif; ?>
                     <div style="flex: 1;">
                         <strong style="color: var(--gold);"><?php echo htmlspecialchars($m['nom_animal']); ?></strong> 
@@ -222,8 +270,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
                         <p style="margin: 5px 0; font-size: 0.9rem; font-style: italic;">"<?php echo htmlspecialchars($m['message']); ?>"</p>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <a href="admin.php?valider_message=<?php echo $m['id']; ?>" style="color: #4ade80; text-decoration: none; font-weight: bold;">[ VALIDER ]</a>
-                        <a href="admin.php?supprimer_message=<?php echo $m['id']; ?>" style="color: #ff4c4c; text-decoration: none; font-size: 0.8rem;" onclick="return confirm('Bannir cette pensée ?')">[ SUPPRIMER ]</a>
+                        <form method="POST" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                            <input type="hidden" name="message_id" value="<?php echo (int)$m['id']; ?>">
+                            <input type="hidden" name="moderation_action" value="approve">
+                            <button type="submit" style="background:none;border:none;color:#4ade80;text-decoration:none;font-weight:bold;cursor:pointer;padding:0;">[ VALIDER ]</button>
+                        </form>
+                        <form method="POST" style="margin:0;" onsubmit="return confirm('Bannir cette pensée ?')">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                            <input type="hidden" name="message_id" value="<?php echo (int)$m['id']; ?>">
+                            <input type="hidden" name="moderation_action" value="delete">
+                            <button type="submit" style="background:none;border:none;color:#ff4c4c;text-decoration:none;font-size:0.8rem;cursor:pointer;padding:0;">[ SUPPRIMER ]</button>
+                        </form>
                     </div>
                 </div>
             <?php endforeach; 

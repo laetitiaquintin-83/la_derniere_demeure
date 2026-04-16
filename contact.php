@@ -1,5 +1,4 @@
 <?php 
-session_start();
 require_once 'config.php'; 
 
 // Calcul du nombre total d'articles pour le compteur du menu
@@ -9,8 +8,13 @@ $message_succes = '';
 
 // Si le formulaire est soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Pour l'instant, on simule l'envoi. Plus tard, on pourra ajouter la fonction mail() ou l'enregistrement en BDD.
-    $message_succes = "Votre message a été confié à notre scénographe. Nous vous répondrons avec la plus grande discrétion.";
+    // 🔐 Vérifier le token CSRF
+    if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
+        $message_succes = "⚠️ Erreur de sécurité. Veuillez réessayer.";
+    } else {
+        // Pour l'instant, on simule l'envoi. Plus tard, on pourra ajouter la fonction mail() ou l'enregistrement en BDD.
+        $message_succes = "Votre message a été confié à notre scénographe. Nous vous répondrons avec la plus grande discrétion.";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -124,11 +128,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
             <a href="index.php">✦ Accueil</a>
-            <a href="images/catalogue.php">✿ Le Catalogue</a>
-            <a href="images/foret.php">✾ Le Sanctuaire</a>
+            <a href="catalogue.php">✿ Le Catalogue</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
             <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
             <a href="contact.php" class="active" style="color: #D4AF37;">❋ Conciergerie</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
             <?php if(isset($_SESSION['user_id'])): ?>
                 <a href="logout.php" class="lock-link">◇ Quitter</a>
             <?php else: ?>
@@ -150,6 +154,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form class="premium-form" method="POST" action="contact.php">
+            <!-- 🔐 TOKEN CSRF -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
+            
             <div class="form-group">
                 <label for="nom">Nom & Prénom</label>
                 <input type="text" id="nom" name="nom" required placeholder="Votre nom complet">

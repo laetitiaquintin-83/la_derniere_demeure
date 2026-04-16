@@ -2,6 +2,12 @@
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 🔐 Vérifier le token CSRF
+    if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
+        http_response_code(403);
+        die("⚠️ Erreur de sécurité CSRF. Veuillez réessayer.");
+    }
+    
     $nom_p = htmlspecialchars($_POST['nom_proprietaire']);
     $nom_a = htmlspecialchars($_POST['nom_animal']);
     $msg = htmlspecialchars($_POST['message']);

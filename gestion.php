@@ -82,13 +82,13 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
 <body class="admin-body">
     <header class="admin-nav">
         <nav>
-            <a href="index.php">Accueil</a>
-            <a href="images/catalogue.php">Le Catalogue</a>
-            <a href="images/foret.php">Le Sanctuaire</a>
-            <a href="admin.php">Le Registre</a>
-            <a href="gestion.php" class="active">L'Inventaire</a>
-            <a href="panier.php" style="margin-left: auto;">L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
-            <a href="logout.php" style="color: #d9534f; margin-left: 15px;">Refermer (Quitter)</a>
+            <a href="index.php">✦ Accueil</a>
+            <a href="catalogue.php">✿ Catalogue</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
+            <a href="admin.php">◆ Registre</a>
+            <a href="gestion.php" class="active">✦ Inventaire</a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="logout.php" style="color: #d9534f; margin-left: 15px;">◇ Quitter</a>
         </nav>
     </header>
 
@@ -99,7 +99,7 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
         <table class="inventory-table">
             <thead>
                 <tr>
-                    <th>Relique</th>
+                    <th>Article</th>
                     <th>Catégorie</th>
                     <th>Prix Unit.</th>
                     <th>Stock Actuel</th>
@@ -126,7 +126,7 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
                     <td>
                         <div class="actions-cell">
                             <a href="modifier.php?id=<?php echo htmlspecialchars($p['id']); ?>" class="btn-modify">Refaçonner</a>
-                            <a href="supprimer.php?id=<?php echo htmlspecialchars($p['id']); ?>&token=<?php echo htmlspecialchars(genererTokenCSRF()); ?>" class="btn-delete" onclick="return confirm('Êtes-vous certain de vouloir anéantir cette relique ?');">Anéantir</a>
+                            <a href="supprimer.php?id=<?php echo htmlspecialchars($p['id']); ?>&token=<?php echo htmlspecialchars(genererTokenCSRF()); ?>" class="btn-delete" onclick="return confirm('Êtes-vous certain de vouloir supprimer cet article ?');">Anéantir</a>
                         </div>
                     </td>
                 </tr>
@@ -135,7 +135,7 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
         </table>
 
         <?php if (empty($produits)): ?>
-            <p style="text-align: center; color: #888; padding: 30px;">Aucune relique actuellement répertoriée.</p>
+            <p style="text-align: center; color: #888; padding: 30px;">Aucun article actuellement répertorié.</p>
         <?php endif; ?>
     </div>
 </section>

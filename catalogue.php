@@ -2,7 +2,7 @@
 session_start(); // Indispensable ici aussi pour lire le panier !
 
 // On utilise ton fichier de configuration pour garder la connexion sécurisée
-require_once '../config.php';
+require_once 'config.php';
 
 // Calcul du nombre total d'articles pour le compteur du menu
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
@@ -44,18 +44,18 @@ $categories_db = $categories_avec_titre;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo genererTokenCSRF(); ?>">
     <title>Le Catalogue | La Dernière Demeure</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body"> 
     <header class="admin-nav">
         <nav>
-            <a href="../index.php">✦ Accueil</a>
-            <a href="catalogue.php" class="active">📜 Le Catalogue</a>
+            <a href="index.php">✦ Accueil</a>
+            <a href="catalogue.php" class="active">✿ Le Catalogue</a>
             <a href="foret.php">✾ Le Sanctuaire</a>
-            <a href="../ceremonies.php">❦ L'Art de l'Adieu</a>
-            <a href="../contact.php">❋ Conciergerie</a>
-            <a href="../panier.php" style="margin-left: auto;">♧️ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
+            <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
+            <a href="contact.php">❋ Conciergerie</a>
+            <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
         </nav>
     </header>
 
@@ -99,12 +99,15 @@ $categories_db = $categories_avec_titre;
                             
                             <div class="product-image">
                                 <img src="<?php 
-                                    $path = htmlspecialchars($p['image_path']);
-                                    // Corriger le chemin si c'est un chemin absolu depuis images/
-                                    if (strpos($path, 'images/') === 0) {
-                                        $path = substr($path, 7); // Enlever 'images/' 
+                                    $rawPath = trim((string) $p['image_path']);
+                                    if (strpos($rawPath, 'images/') === 0) {
+                                        $imgPath = $rawPath;
+                                    } elseif (strpos($rawPath, 'catalogue/') === 0) {
+                                        $imgPath = 'images/' . $rawPath;
+                                    } else {
+                                        $imgPath = 'images/catalogue/' . basename($rawPath);
                                     }
-                                    echo $path;
+                                    echo htmlspecialchars($imgPath);
                                 ?>" alt="<?php echo htmlspecialchars($p['nom']); ?>">
                             </div>
                             
@@ -138,8 +141,8 @@ $categories_db = $categories_avec_titre;
 
     <div id="toast" class="toast"></div>
 
-    <script src="../script.js"></script>
+    <script src="script.js"></script>
 
-    <?php include '../footer.php'; ?>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

@@ -111,8 +111,8 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
             <a href="index.php">✦ Accueil</a>
-            <a href="images/catalogue.php">✿ Le Catalogue</a>
-            <a href="images/foret.php">✾ Le Sanctuaire</a>
+            <a href="catalogue.php">✿ Le Catalogue</a>
+            <a href="foret.php">✾ Le Sanctuaire</a>
             <a href="ceremonies.php" class="active" style="color: #D4AF37;">❦ L'Art de l'Adieu</a>
             <a href="contact.php">❋ Conciergerie</a>
             <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
@@ -203,7 +203,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
         <div style="max-width: 800px; margin: 0 auto; border: 1px dashed #D4AF37; padding: 50px 30px;">
             <h3 style="color: #D4AF37; font-family: 'Cinzel', serif; font-size: 2em; margin-bottom: 20px;">Orchestrer l'Inoubliable</h3>
             <p style="color: #ccc; margin-bottom: 30px;">Notre service de conciergerie et nos scénographes sont à votre écoute pour concevoir un hommage sur-mesure, respectant l'essence même de la vie que vous souhaitez célébrer.</p>
-            <a href="contact.php" style="display: inline-block; padding: 15px 40px; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;">Contacter notre Scénographe</a>
+            <a href="contact.php" style="display: inline-block; padding: 15px 40px; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;">❋ Contacter notre Scénographe</a>
         </div>
     </section>
 
