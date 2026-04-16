@@ -68,6 +68,7 @@ STRIPE_SECRET_KEY=
 ### Étape 2: Modifier `config.php`
 
 **Avant:**
+
 ```php
 <?php
 // config.php - Configuration centralisée du projet
@@ -97,6 +98,7 @@ $pass   = '';
 ```
 
 **Après:**
+
 ```php
 <?php
 // config.php - Configuration centralisée du projet
@@ -228,7 +230,7 @@ SELECT USER, HOST FROM mysql.user WHERE USER = 'demeure_user';
 function rate_limit_check($action_type, $limit = 5, $window = 300) {
     // Clé unique basée sur l'IP et l'action
     $key = "rate_limit_" . md5($action_type . $_SERVER['REMOTE_ADDR']);
-    
+
     // Initialiser ou récupérer le compteur
     if (!isset($_SESSION[$key])) {
         $_SESSION[$key] = [
@@ -236,7 +238,7 @@ function rate_limit_check($action_type, $limit = 5, $window = 300) {
             'reset_time' => time() + $window
         ];
     }
-    
+
     // Réinitialiser si la fenêtre de temps est expirée
     if (time() > $_SESSION[$key]['reset_time']) {
         $_SESSION[$key] = [
@@ -244,15 +246,15 @@ function rate_limit_check($action_type, $limit = 5, $window = 300) {
             'reset_time' => time() + $window
         ];
     }
-    
+
     // Vérifier si la limite est atteinte
     if ($_SESSION[$key]['count'] >= $limit) {
         return false;  // Limite atteinte
     }
-    
+
     // Incrémenter le compteur
     $_SESSION[$key]['count']++;
-    
+
     return true;  // Action autorisée
 }
 
@@ -283,10 +285,11 @@ function rate_limit_wait_time($action_type) {
 ### Modifier `contact.php`
 
 **Avant:**
+
 ```php
-<?php 
+<?php
 session_start();
-require_once 'config.php'; 
+require_once 'config.php';
 
 // ...
 
@@ -297,8 +300,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ```
 
 **Après:**
+
 ```php
-<?php 
+<?php
 session_start();
 require_once 'config.php';
 require_once 'rate_limiter.php';
@@ -331,36 +335,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = htmlspecialchars($_POST['email']);
         $nom = htmlspecialchars($_POST['nom'] ?? 'Non spécifié');
         $message_text = htmlspecialchars($_POST['message']);
-        
+
         // Envoyer l'email (ou enregistrer en base)
         // TODO: Implémenter l'envoi d'email
-        
+
         $message_succes = "Votre message a été confié à notre scénographe. Nous vous répondrons avec la plus grande discrétion.";
     }
 }
 ```
 
 **Dans le formulaire HTML:**
+
 ```html
 <?php if (!empty($message_erreur)): ?>
-    <div class="error-msg"><?php echo $message_erreur; ?></div>
+<div class="error-msg"><?php echo $message_erreur; ?></div>
 <?php endif; ?>
 
 <form method="POST">
-    <input type="hidden" name="csrf_token" value="<?php echo genererTokenCSRF(); ?>">
-    
-    <!-- Ajouter champs -->
-    <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" required>
-    </div>
-    
-    <div class="form-group">
-        <label>Message</label>
-        <textarea name="message" required></textarea>
-    </div>
-    
-    <button type="submit">Envoyer</button>
+  <input
+    type="hidden"
+    name="csrf_token"
+    value="<?php echo genererTokenCSRF(); ?>"
+  />
+
+  <!-- Ajouter champs -->
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" name="email" required />
+  </div>
+
+  <div class="form-group">
+    <label>Message</label>
+    <textarea name="message" required></textarea>
+  </div>
+
+  <button type="submit">Envoyer</button>
 </form>
 ```
 
@@ -368,13 +377,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ## 3. Ajouter CSRF à Contact.php
 
-*Voir patch #2 ci-dessus (déjà inclus)*
+_Voir patch #2 ci-dessus (déjà inclus)_
 
 ---
 
 ## 4. Ajouter CSRF à traitement_jardin.php
 
 **Avant:**
+
 ```php
 <?php
 require_once 'config.php';
@@ -388,6 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ```
 
 **Après:**
+
 ```php
 <?php
 require_once 'config.php';
@@ -398,17 +409,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!rate_limit_check('animal_tribute', 5, 600)) {  // Max 5 soumissions par 10 min
         die(json_encode(['success' => false, 'message' => 'Trop de soumissions. Réessayez plus tard.'], true));
     }
-    
+
     // 2. Vérifier CSRF
     if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
         die(json_encode(['success' => false, 'message' => 'Erreur de sécurité CSRF.']));
     }
-    
+
     // 3. Valider les données
     if (empty($_POST['nom_proprietaire']) || empty($_POST['nom_animal']) || empty($_POST['message'])) {
         die(json_encode(['success' => false, 'message' => 'Tous les champs sont obligatoires.']));
     }
-    
+
     // 4. Traiter le formulaire
     $nom_p = htmlspecialchars(trim($_POST['nom_proprietaire']), ENT_QUOTES, 'UTF-8');
     $nom_a = htmlspecialchars(trim($_POST['nom_animal']), ENT_QUOTES, 'UTF-8');
@@ -417,10 +428,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ```
 
 **Dans le formulaire HTML:**
+
 ```html
 <form method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="<?php echo genererTokenCSRF(); ?>">
-    <!-- Autres champs du formulaire -->
+  <input
+    type="hidden"
+    name="csrf_token"
+    value="<?php echo genererTokenCSRF(); ?>"
+  />
+  <!-- Autres champs du formulaire -->
 </form>
 ```
 
@@ -428,13 +444,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ## 5. Ajouter Headers de Sécurité Globaux
 
-*Voir patch #1 ci-dessus (déjà inclus dans config.php)*
+_Voir patch #1 ci-dessus (déjà inclus dans config.php)_
 
 ---
 
 ## 6. Corriger XSS dans modifier.php
 
 **Avant:**
+
 ```php
 $nom = trim($_POST['nom'] ?? '');
 $categorie = trim($_POST['categorie'] ?? '');
@@ -449,6 +466,7 @@ $sql = "UPDATE catalogue_funeraire SET nom=?, categorie=?, essence_bois=?, coule
 ```
 
 **Après:**
+
 ```php
 // ==========================================
 // RÉCUPÉRATION ET ÉCHAPPEMENT DES DONNÉES
@@ -472,6 +490,7 @@ $sql = "UPDATE catalogue_funeraire SET nom=?, categorie=?, essence_bois=?, coule
 ## 7. Améliorer Validation MIME dans modifier.php
 
 **Avant:**
+
 ```php
 elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
     $target_dir = "images/catalogue/";
@@ -490,6 +509,7 @@ elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) 
 ```
 
 **Après:**
+
 ```php
 elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
     $target_dir = "images/catalogue/";
@@ -500,34 +520,34 @@ elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) 
     // ==========================================
     // VALIDATION COMPLÈTE DE FICHIER
     // ==========================================
-    
+
     // 1. Vérifier l'extension
     $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
     if (!in_array($file_extension, $allowed_extensions)) {
         die("Erreur : Extension non autorisée. Acceptés: jpg, jpeg, png, webp");
     }
-    
+
     // 2. Vérifier la taille
     if ($_FILES["image"]["size"] > 5 * 1024 * 1024) {
         die("Erreur : Fichier trop volumineux (max 5MB).");
     }
-    
+
     // 3. Vérifier le VRAI type MIME (côté serveur)
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $real_mime = finfo_file($finfo, $_FILES["image"]["tmp_name"]);
     finfo_close($finfo);
-    
+
     $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!in_array($real_mime, $allowed_mimes)) {
         die("Erreur de sécurité : Le fichier uploadé n'est pas une image valide (MIME détecté: $real_mime).");
     }
-    
+
     // 4. Vérifier la traversée répertoire
     $real_path = realpath($target_dir) . DIRECTORY_SEPARATOR . $file_name;
     if (strpos($real_path, realpath($target_dir)) !== 0) {
         die("Erreur de sécurité : Chemin invalide.");
     }
-    
+
     // 5. Upload sécurisé
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $real_path)) {
         $ancienne_image = $produit['image_path'];
@@ -546,6 +566,7 @@ elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) 
 ### ⚠️ IMPORTANT: Ne JAMAIS traiter localement la carte bancaire
 
 **Avant:**
+
 ```php
 // Validation basique des champs du formulaire
 if (empty($_POST['nom_titulaire']) || empty($_POST['numero_carte'])) {
@@ -613,7 +634,7 @@ require_once 'vendor/autoload.php';
 try {
     // 1. Tarification (passer en centimes pour Stripe)
     $total_cents = (int)($total * 100);
-    
+
     // 2. Créer une intention de paiement
     $payment_intent = \Stripe\PaymentIntent::create([
         'amount' => $total_cents,
@@ -624,7 +645,7 @@ try {
             'customer_name' => htmlspecialchars($_POST['nom_titulaire'])
         ]
     ]);
-    
+
     // 3. Retourner le client_secret au frontend
     header('Content-Type: application/json');
     echo json_encode([
@@ -632,7 +653,7 @@ try {
         'client_secret' => $payment_intent->client_secret
     ]);
     exit;
-    
+
 } catch (\Stripe\Exception\ApiErrorException $e) {
     error_log("Erreur Stripe: " . $e->getMessage());
     header('Content-Type: application/json');
@@ -648,35 +669,39 @@ try {
 
 ```html
 <form id="payment-form">
-    <input type="hidden" name="csrf_token" value="<?php echo genererTokenCSRF(); ?>">
-    
-    <div id="card-element"></div>
-    <button id="submit-btn" type="button">Payer</button>
+  <input
+    type="hidden"
+    name="csrf_token"
+    value="<?php echo genererTokenCSRF(); ?>"
+  />
+
+  <div id="card-element"></div>
+  <button id="submit-btn" type="button">Payer</button>
 </form>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-const stripe = Stripe('<?php echo getenv('STRIPE_PUBLIC_KEY'); ?>');
-const elements = stripe.elements();
-const cardElement = elements.create('card');
-cardElement.mount('#card-element');
+  const stripe = Stripe('<?php echo getenv('STRIPE_PUBLIC_KEY'); ?>');
+  const elements = stripe.elements();
+  const cardElement = elements.create('card');
+  cardElement.mount('#card-element');
 
-document.getElementById('submit-btn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    
-    // Créer le payment method depuis la carte
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement
-    });
-    
-    if (error) {
-        console.error(error.message);
-    } else {
-        // Envoyer le paymentMethod au serveur pour confirmer le paiement
-        // (voir backend pour confirmPaymentIntent)
-    }
-});
+  document.getElementById('submit-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      // Créer le payment method depuis la carte
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement
+      });
+
+      if (error) {
+          console.error(error.message);
+      } else {
+          // Envoyer le paymentMethod au serveur pour confirmer le paiement
+          // (voir backend pour confirmPaymentIntent)
+      }
+  });
 </script>
 ```
 
@@ -725,13 +750,13 @@ function log_audit($pdo, $action, $resource_type, $resource_id, $old_values = nu
         $admin_id = $_SESSION['user_id'] ?? null;
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
         $user_agent = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
-        
+
         $stmt = $pdo->prepare("
-            INSERT INTO audit_log 
+            INSERT INTO audit_log
             (admin_id, action, resource_type, resource_id, old_values, new_values, ip_address, user_agent)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        
+
         $stmt->execute([
             $admin_id,
             $action,
@@ -742,7 +767,7 @@ function log_audit($pdo, $action, $resource_type, $resource_id, $old_values = nu
             $ip,
             $user_agent
         ]);
-        
+
         return true;
     } catch (Exception $e) {
         error_log("Erreur audit: " . $e->getMessage());
@@ -827,6 +852,7 @@ log_audit($pdo, 'UPDATE', 'produit', $id, $old_values, [
 ## 10. Ajouter CSRF à logout.php
 
 **Avant:**
+
 ```php
 <?php
 session_start();
@@ -840,6 +866,7 @@ exit;
 ```
 
 **Après:**
+
 ```php
 <?php
 require_once 'config.php';
@@ -867,18 +894,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <body class="admin-body">
         <div class="admin-container">
             <h1 class="admin-title">Confirmer la Déconnexion</h1>
-            
+
             <p style="text-align: center; color: #b3b3b3;">
                 Êtes-vous certain de vouloir quitter le registre de la crypte?
             </p>
-            
+
             <form method="POST" style="text-align: center;">
                 <input type="hidden" name="csrf_token" value="<?php echo genererTokenCSRF(); ?>">
-                
+
                 <button type="submit" class="btn-gold" style="margin: 20px; padding: 10px 30px;">
                     Confirmer Déconnexion
                 </button>
-                
+
                 <a href="gestion.php" class="btn-gold" style="margin: 20px; padding: 10px 30px;">
                     Annuler
                 </a>
@@ -899,13 +926,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
         die("Erreur de sécurité CSRF. Déconnexion annulée.");
     }
-    
+
     // LOG: Enregistrer la déconnexion
     error_log("Utilisateur connecté en tant que admin s'est déconnecté de l'IP " . $_SERVER['REMOTE_ADDR']);
-    
+
     // Détruire la session
     session_destroy();
-    
+
     // Rediriger vers l'accueil
     header('Location: index.php');
     exit;
