@@ -37,10 +37,17 @@ $titres_poetiques = [
 <head>
     <meta charset="UTF-8">
     <title>La Dernière Demeure | L'Éternité pour Écrin</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;1,400&display=block" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --ivory: #f3ebd1; --bg: #050505; }
+        :root {
+            --gold: #d4af37;
+            --gold-soft: #c8a24a;
+            --gold-bright: #e2c46b;
+            --ivory: #f3ebd1;
+            --bg: #050505;
+        }
         body { 
             margin: 0; 
             background: var(--bg); 
@@ -97,6 +104,7 @@ $titres_poetiques = [
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
             position: relative; margin-top: 0;
             width: 100%;
+            overflow: hidden;
         }
         .hero::before {
             content: '';
@@ -104,6 +112,28 @@ $titres_poetiques = [
             inset: 0;
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.32));
             pointer-events: none;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: -8% -15%;
+            background:
+                radial-gradient(circle at 20% 35%, rgba(255, 255, 255, 0.12), transparent 42%),
+                radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.08), transparent 45%);
+            mix-blend-mode: screen;
+            opacity: 0.45;
+            pointer-events: none;
+            animation: mistDrift 18s ease-in-out infinite alternate;
+        }
+        @keyframes mistDrift {
+            0% {
+                transform: translateX(-2%) translateY(0) scale(1);
+                opacity: 0.35;
+            }
+            100% {
+                transform: translateX(2%) translateY(-1%) scale(1.04);
+                opacity: 0.55;
+            }
         }
         @keyframes heroGlow {
             0%, 100% { opacity: 0.3; }
@@ -115,8 +145,8 @@ $titres_poetiques = [
             letter-spacing: 2vw; 
             margin: 0; 
             line-height: 0.9; 
-            color: #ffd700;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            color: var(--gold-bright);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 22px rgba(212, 175, 55, 0.35);
             position: relative;
             z-index: 10;
         }
@@ -127,14 +157,14 @@ $titres_poetiques = [
         .title-bottom { 
             font-family: 'Cinzel'; font-size: clamp(3.5rem, 8vw, 6.5rem); letter-spacing: 1.5vw; 
             margin: -10px 0 0 0; 
-            color: #d4af37;
+            color: var(--gold);
             text-shadow: 0 0 40px rgba(212,175,55,0.4), 0 12px 30px rgba(0,0,0,0.9);
             animation: titleFloat 6s ease-in-out infinite 0.2s;
             position: relative;
             z-index: 2;
         }
         .tagline-gold { 
-            font-family: 'Cinzel'; color: var(--gold); letter-spacing: 4px; 
+            font-family: 'Cinzel'; color: var(--gold-soft); letter-spacing: 4px; 
             font-size: clamp(0.9rem, 2vw, 1.5rem); margin: 40px 0 0 0;
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
             animation: fadeInUp 1.2s ease 0.8s both;
