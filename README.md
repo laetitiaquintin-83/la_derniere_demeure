@@ -17,7 +17,7 @@ Créer une plateforme e-commerce permettant :
 
 Si tu veux modifier une **page visible** :
 
-- 1) Entrée HTTP dans `public/pages/` (servie via les URLs publiques, ex: `index.php`, `catalogue.php`, `contact.php`)
+- 1) Entrée HTTP dans `public/pages/client`, `public/pages/admin`, `public/pages/payment` ou `public/pages/info` (servie via les URLs publiques)
 - 2) Rendu HTML dans `app/Views/pages/`
 - 3) Logique dans `app/Controllers/`
 - 4) Requêtes SQL / données dans `app/Models/`
@@ -102,13 +102,18 @@ la_derniere_demeure/
 ├── 🌐 Entrées publiques (front-controllers)
 │   └── public/
 │       ├── pages/
-│       │   ├── index.php
-│       │   ├── catalogue.php
-│       │   ├── panier.php
-│       │   ├── login.php / logout.php
-│       │   ├── admin.php / gestion.php / modifier.php / supprimer.php
-│       │   ├── contact.php / foret.php / ceremonies.php / repos_des_fideles.php
-│       │   └── payment-form.php / payment-success.php
+│       │   ├── client/
+│       │   │   ├── index.php
+│       │   │   ├── catalogue.php
+│       │   │   ├── panier.php
+│       │   │   ├── contact.php / foret.php / ceremonies.php / repos_des_fideles.php
+│       │   ├── admin/
+│       │   │   ├── login.php / logout.php
+│       │   │   ├── admin.php / gestion.php / modifier.php / supprimer.php
+│       │   ├── payment/
+│       │   │   └── payment-form.php / payment-success.php
+│       │   └── info/
+│       │       └── mentions-legales.php
 │       ├── endpoints/
 │       │   ├── ajouter_panier.php
 │       │   ├── create-checkout-session.php

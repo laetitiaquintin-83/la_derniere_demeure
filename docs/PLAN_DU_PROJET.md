@@ -4,10 +4,10 @@ Objectif: comprendre ou modifier le projet sans se perdre.
 
 ## 1) Ou toucher selon le besoin
 
-- Page visible (UI): public/pages/ pour les entrées, app/Views/pages/ pour les templates
+- Page visible (UI): public/pages/client, public/pages/admin, public/pages/payment, public/pages/info
 - Logique de page: app/Controllers/
 - Acces base de donnees: app/Models/
-- Point d'entree URL: fichiers .php dans public/pages/ (index.php, catalogue.php, etc.)
+- Point d'entree URL: fichiers .php dans public/pages/* (repartis par usage)
 - Configuration et securite: app/Config/config.local.php, app/Config/, app/bootstrap.php
 - Partiels de vue (footer, etc.): app/Views/partials/
 - Assets: style.css, script.js, images/

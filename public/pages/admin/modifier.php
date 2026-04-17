@@ -1,9 +1,9 @@
 ﻿<?php
-require_once __DIR__ . '/../../app/bootstrap.php';
+require_once __DIR__ . '/../../../app/bootstrap.php';
 
 // 1. Le verrou du Gardien (Sécurité)
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit;
 }
 
@@ -113,12 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Optionnel : ne pas supprimer si c'est une image partagée
             unlink($old_real);
         }
-        header("Location: gestion.php?success=1");
+        header("Location: /gestion.php?success=1");
         exit();
     }
 }
 ?>
-<?php require __DIR__ . '/../../app/Views/pages/modifier.php'; ?>
+<?php require __DIR__ . '/../../../app/Views/pages/modifier.php'; ?>
+
 
 
 
