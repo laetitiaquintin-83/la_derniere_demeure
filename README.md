@@ -13,6 +13,33 @@ Créer une plateforme e-commerce permettant :
 
 ---
 
+## 🧭 Commencer Ici (version claire)
+
+Si tu veux modifier une **page visible** :
+
+- 1) Entrée HTTP à la racine (`index.php`, `catalogue.php`, `contact.php`, etc.)
+- 2) Rendu HTML dans `app/Views/pages/`
+- 3) Logique dans `app/Controllers/`
+- 4) Requêtes SQL / données dans `app/Models/`
+
+Si tu veux modifier la **sécurité / config** :
+
+- `config.php`, `helpers.php`, `constantes.php`, `app/bootstrap.php`
+
+Si tu veux modifier les **styles et scripts** :
+
+- `style.css`, `script.js`, `images/`
+
+Si tu veux lire les **livrables / audits** :
+
+- `docs/README.md` puis les rapports dans `docs/`
+
+Si tu veux lancer des **outils locaux** :
+
+- `tools/README.md`
+
+---
+
 ## 🛠️ Stack Technique
 
 | Composant           | Technologie                       | Version/Détails |
@@ -71,36 +98,37 @@ Créer une plateforme e-commerce permettant :
 ```
 la_derniere_demeure/
 │
-├── 📄 INDEX (pages principales)
-│   ├── index.php              ⭐ Page d'accueil + catalogue
-│   └── contact.php            📧 Formulaire de contact
+├── 🌐 Entrées publiques (front-controllers)
+│   ├── index.php
+│   ├── catalogue.php
+│   ├── panier.php
+│   ├── login.php / logout.php
+│   ├── admin.php / gestion.php / modifier.php / supprimer.php
+│   ├── contact.php / foret.php / ceremonies.php / repos_des_fideles.php
+│   └── payment-form.php / payment-success.php / create-checkout-session.php
 │
-├── 🛍️ PANIER & PAIEMENT
-│   ├── panier.php             📦 Affichage du panier
-│   ├── ajouter_panier.php     ➕ API AJAX d'ajout (POST)
-│   └── traitement_paiement.php 💳 Traitement des commandes
+├── 🧠 MVC (app/)
+│   ├── app/bootstrap.php
+│   ├── app/Controllers/        🎛️ Contrôleurs
+│   ├── app/Models/             🗃️ Modèles
+│   └── app/Views/pages/        🖼️ Vues pages
 │
-├── 🔐 AUTHENTIFICATION & ADMIN
-│   ├── login.php              🔑 Page de connexion admin
-│   ├── logout.php             🚪 Déconnexion
-│   ├── admin.php              ➕ Formulaire d'ajout de produit
-│   ├── gestion.php            📋 Dashboard d'inventaire
-│   ├── modifier.php           ✏️ Modification de produit
-│   └── supprimer.php          🗑️ Suppression de produit
+├── ⚙️ Configuration et utilitaires runtime
+│   ├── config.php / helpers.php / constantes.php
+│   ├── update_stock.php / ajouter_panier.php / traitement_jardin.php
+│   └── process-payment.php / traitement_paiement.php
 │
-├── ⚙️ CONFIGURATION
-│   ├── config.php             🔧 BDD + fonctions CSRF
-│   ├── update_stock.php       📊 Mise à jour stock (AJAX)
-│   └── optim_cursor.py        🐍 Script d'optimisation curseur
+├── 🎨 Assets
+│   ├── style.css / script.js
+│   ├── images/
+│   └── footer.php
 │
-├── 🎨 ASSETS
-│   ├── style.css              🎨 Styles + variables CSS
-│   ├── script.js              ⚡ Logique frontend (AJAX, animations)
-│   └── images/                📸 Ressources (produits, brume, curseur)
-│       └── catalogue/         📦 Images des produits renommées
+├── 📚 Documentation projet
+│   ├── README.md               📖 Point d'entrée principal
+│   └── docs/                   🗂️ Livrables, audits, checklists, synthèses
 │
-└── 📚 DOCUMENTATION
-    └── README.md              📖 Ce fichier
+└── 🧪 Outils locaux
+    └── tools/                  🔧 Scripts et fichiers de test
 ```
 
 ---
