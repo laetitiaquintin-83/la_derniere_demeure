@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
 </body>
 </html>
 

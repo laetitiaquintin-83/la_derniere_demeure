@@ -548,7 +548,7 @@
         <a href="contact.php" class="btn-contact">Entrer en Contact</a>
     </section>
 
-    <?php include 'footer.php'; ?>
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
     <script src="script.js"></script>
 </body>
 </html>

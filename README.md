@@ -109,19 +109,23 @@ la_derniere_demeure/
 │
 ├── 🧠 MVC (app/)
 │   ├── app/bootstrap.php
+│   ├── app/Config/             ⚙️ Constantes et helpers internes
 │   ├── app/Controllers/        🎛️ Contrôleurs
 │   ├── app/Models/             🗃️ Modèles
-│   └── app/Views/pages/        🖼️ Vues pages
+│   ├── app/Views/pages/        🖼️ Vues pages
+│   └── app/Views/partials/     🧩 Partiels réutilisables (footer)
 │
 ├── ⚙️ Configuration et utilitaires runtime
-│   ├── config.php / helpers.php / constantes.php
+│   ├── config.php (point d'entrée config local)
 │   ├── update_stock.php / ajouter_panier.php / traitement_jardin.php
 │   └── process-payment.php / traitement_paiement.php
+
+├── 🗄️ Base de données
+│   └── database/DATABASE_SETUP.sql
 │
 ├── 🎨 Assets
 │   ├── style.css / script.js
-│   ├── images/
-│   └── footer.php
+│   └── images/
 │
 ├── 📚 Documentation projet
 │   ├── README.md               📖 Point d'entrée principal

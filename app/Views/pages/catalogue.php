@@ -81,7 +81,7 @@
 
     <script src="script.js"></script>
 
-    <?php include 'footer.php'; ?>
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
 </body>
 </html>
 

@@ -2,7 +2,7 @@
 // helpers.php - Fonctions utilitaires pour éviter la duplication de code
 // Ces functions démontrent la maîtrise des bonnes pratiques
 
-require_once 'constantes.php';
+require_once __DIR__ . '/constantes.php';
 
 // ==========================================
 // ÉCHAPPEMENT ET SANITIZATION

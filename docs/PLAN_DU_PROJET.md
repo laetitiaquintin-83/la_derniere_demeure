@@ -8,8 +8,10 @@ Objectif: comprendre ou modifier le projet sans se perdre.
 - Logique de page: app/Controllers/
 - Acces base de donnees: app/Models/
 - Point d'entree URL: fichiers .php a la racine (index.php, catalogue.php, etc.)
-- Configuration et securite: config.php, helpers.php, constantes.php, app/bootstrap.php
+- Configuration et securite: config.php, app/Config/, app/bootstrap.php
+- Partiels de vue (footer, etc.): app/Views/partials/
 - Assets: style.css, script.js, images/
+- Script SQL: database/DATABASE_SETUP.sql
 - Documentation: docs/
 - Outils locaux: tools/
 
