@@ -8,7 +8,7 @@
  * Stripe s'occupe de tout via son formulaire tokenisé
  */
 
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../../app/bootstrap.php';
 
 $payment_id = $_GET['payment_id'] ?? null;
 
@@ -21,7 +21,8 @@ if (!$payment_id || !isset($_SESSION['pending_payment']) || $_SESSION['pending_p
 $payment = $_SESSION['pending_payment'];
 $montant = number_format($payment['amount'], 2, ',', ' ');
 ?>
-<?php require __DIR__ . '/../app/Views/pages/payment-form.php'; ?>
+<?php require __DIR__ . '/../../app/Views/pages/payment-form.php'; ?>
+
 
 
 

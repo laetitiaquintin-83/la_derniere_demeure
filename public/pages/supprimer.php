@@ -1,6 +1,6 @@
 ﻿<?php
 // On inclut la config qui gÃ¨re dÃ©jÃ  session_start() et PDO
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../../app/bootstrap.php';
 
 // 1. VÃ‰RIFICATION DE L'ACCÃˆS ADMIN
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
@@ -49,3 +49,4 @@ try {
     error_log("Erreur lors de l'anÃ©antissement : " . $e->getMessage());
     die("Une force obscure a empÃªchÃ© la suppression de l'article.");
 }
+

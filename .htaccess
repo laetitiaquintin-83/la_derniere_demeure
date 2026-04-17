@@ -1,9 +1,32 @@
 RewriteEngine On
 
-# Laisser passer les ressources et dossiers existants
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+# Pages publiques
+RewriteRule ^index\.php$ public/pages/index.php [L]
+RewriteRule ^catalogue\.php$ public/pages/catalogue.php [L]
+RewriteRule ^panier\.php$ public/pages/panier.php [L]
+RewriteRule ^login\.php$ public/pages/login.php [L]
+RewriteRule ^logout\.php$ public/pages/logout.php [L]
+RewriteRule ^admin\.php$ public/pages/admin.php [L]
+RewriteRule ^gestion\.php$ public/pages/gestion.php [L]
+RewriteRule ^modifier\.php$ public/pages/modifier.php [L]
+RewriteRule ^supprimer\.php$ public/pages/supprimer.php [L]
+RewriteRule ^contact\.php$ public/pages/contact.php [L]
+RewriteRule ^foret\.php$ public/pages/foret.php [L]
+RewriteRule ^ceremonies\.php$ public/pages/ceremonies.php [L]
+RewriteRule ^repos_des_fideles\.php$ public/pages/repos_des_fideles.php [L]
+RewriteRule ^mentions-legales\.php$ public/pages/mentions-legales.php [L]
+RewriteRule ^payment-form\.php$ public/pages/payment-form.php [L]
+RewriteRule ^payment-success\.php$ public/pages/payment-success.php [L]
 
-# Rediriger tout le reste vers le dossier public
-RewriteRule ^(.*)$ public/$1 [L]
+# Endpoints techniques
+RewriteRule ^ajouter_panier\.php$ public/endpoints/ajouter_panier.php [L]
+RewriteRule ^create-checkout-session\.php$ public/endpoints/create-checkout-session.php [L]
+RewriteRule ^process-payment\.php$ public/endpoints/process-payment.php [L]
+RewriteRule ^traitement_jardin\.php$ public/endpoints/traitement_jardin.php [L]
+RewriteRule ^traitement_paiement\.php$ public/endpoints/traitement_paiement.php [L]
+RewriteRule ^update_stock\.php$ public/endpoints/update_stock.php [L]
+
+# Ressources publiques
+RewriteRule ^style\.css$ public/style.css [L]
+RewriteRule ^script\.js$ public/script.js [L]
+RewriteRule ^images/(.*)$ public/images/$1 [L]

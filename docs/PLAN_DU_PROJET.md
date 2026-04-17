@@ -4,14 +4,15 @@ Objectif: comprendre ou modifier le projet sans se perdre.
 
 ## 1) Ou toucher selon le besoin
 
-- Page visible (UI): public/ pour les entrées, app/Views/pages/ pour les templates
+- Page visible (UI): public/pages/ pour les entrées, app/Views/pages/ pour les templates
 - Logique de page: app/Controllers/
 - Acces base de donnees: app/Models/
-- Point d'entree URL: fichiers .php dans public/ (index.php, catalogue.php, etc.)
+- Point d'entree URL: fichiers .php dans public/pages/ (index.php, catalogue.php, etc.)
 - Configuration et securite: app/Config/config.local.php, app/Config/, app/bootstrap.php
 - Partiels de vue (footer, etc.): app/Views/partials/
 - Assets: style.css, script.js, images/
 - Script SQL: database/DATABASE_SETUP.sql
+- Endpoints techniques: public/endpoints/
 - Documentation: docs/
 - Outils locaux: tools/
 

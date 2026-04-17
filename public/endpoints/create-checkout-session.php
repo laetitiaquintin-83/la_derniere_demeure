@@ -9,7 +9,7 @@
  * Stripe s'occupe du paiement de maniÃ¨re sÃ©curisÃ©e (PCI-DSS)
  */
 
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../../app/bootstrap.php';
 
 // Valider la requÃªte
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -137,4 +137,5 @@ try {
     ]);
 }
 ?>
+
 

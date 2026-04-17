@@ -8,7 +8,7 @@
  * JAMAIS les donnÃ©es rÃ©elles de la carte
  */
 
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../../app/bootstrap.php';
 
 header('Content-Type: application/json');
 
@@ -179,4 +179,5 @@ try {
     ]);
 }
 ?>
+
 

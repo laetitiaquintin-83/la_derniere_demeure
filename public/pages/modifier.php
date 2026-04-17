@@ -1,5 +1,5 @@
 ﻿<?php
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../../app/bootstrap.php';
 
 // 1. Le verrou du Gardien (Sécurité)
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
@@ -118,7 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<?php require __DIR__ . '/../app/Views/pages/modifier.php'; ?>
+<?php require __DIR__ . '/../../app/Views/pages/modifier.php'; ?>
+
 
 
 
