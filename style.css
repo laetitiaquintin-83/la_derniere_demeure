@@ -1141,3 +1141,65 @@ body.admin-body {
     transition-duration: 2s;
     transition-delay: 0.3s;
 }
+/* Le Halo sur les boutons */
+.btn-glow {
+    position: relative;
+    padding: 15px 40px;
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    background: rgba(0,0,0,0.6);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); /* Le halo */
+    transition: 0.5s;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); /* Le halo s'intensifie */
+    background: #D4AF37;
+    color: #000;
+}
+
+/* L'aspect solennel du Hero */
+.hero-sanctuaire {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: url('images/brume.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
+}
+
+.titre-monumental {
+    font-size: 5rem;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 15px;
+    margin: 20px 0;
+    text-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* Les cartes portails (plus hautes, plus sombres) */
+.portail-card {
+    display: block;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.portail-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.2); /* Pour le côté intemporel */
+    transition: 1s;
+}
+
+.portail-card:hover img {
+    filter: grayscale(0.5) contrast(1);
+    transform: scale(1.05);
+}
