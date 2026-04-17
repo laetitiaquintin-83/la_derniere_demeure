@@ -1,42 +1,67 @@
-# LIVRABLE FINAL - 17 avril 2026
+# LIVRABLE FINAL - La Dernière Demeure
 
-## 1) Etat d'avancement
+Date: 17 avril 2026  
+Statut: prêt pour recette finale et soutenance
 
-- Migration vers un socle MVC effectuee avec un bootstrap commun: `app/bootstrap.php`.
-- Separation logique appliquee sur les pages principales (accueil, catalogue, panier, login, admin, gestion).
-- Endpoints techniques (panier AJAX, stock, jardin, logout, paiement) rattaches au meme socle.
+## 1) Résumé exécutif
 
-## 2) Nettoyage et coherence
+Le projet a été consolidé autour d'un socle MVC progressif, sans rupture des routes existantes.  
+La sécurité applicative a été renforcée sur les flux sensibles (authentification, formulaires, endpoints AJAX, paiement).  
+L'expérience utilisateur a été harmonisée (navigation, parcours non bloquants, cohérence visuelle, animations maîtrisées).
 
-- Plus de `require_once 'config.php'` direct dans les pages racine refactorees: passage par le bootstrap commun.
-- Styles `quick-nav` centralises dans `style.css` (suppression des duplications locales).
-- Navigation de sortie ajoutee sur les pages auparavant fermees (thematique + paiement + infos).
+## 2) Périmètre livré
 
-## 3) Securite et robustesse
+### 2.1 Architecture
 
-- CSRF verifie sur les formulaires sensibles.
-- Formulaire jardin de `ceremonies.php` alimente avec token CSRF.
-- Affichage du message contact echappe avec `htmlspecialchars`.
+- Bootstrap commun en place via app/bootstrap.php.
+- Contrôleurs et modèles dédiés ajoutés pour les pages principales et les endpoints critiques.
+- Logique métier sortie des pages d'affichage les plus sensibles.
 
-## 4) Harmonisation front
+### 2.2 Pages et flux couverts
 
-- Effets d'images sanctuaire consolides (halo, sweep, zoom subtil, hover).
-- Rythme d'animation ceremonies adouci pour coherence.
-- `prefers-reduced-motion` pris en compte pour accessibilite.
+- Front principal: accueil, catalogue, panier, contact, pages thématiques.
+- Back-office: login, dashboard admin, inventaire, modification/suppression, logout.
+- Paiement démo: création de session, formulaire sécurisé, traitement, page de succès.
+- Endpoints techniques: ajout panier AJAX, mise à jour stock, dépôt jardin.
 
-## 5) Recette finale (Laragon)
+## 3) Sécurité appliquée
 
-1. Parcours navigation: accueil -> catalogue -> sanctuaire -> ceremonies -> contact -> mentions.
-2. Panier: ajout article, compteur, suppression, retour panier.
-3. Paiement demo: panier -> create-checkout-session -> payment-form -> process-payment -> payment-success.
-4. Admin: login, ajout produit, modification, suppression, gestion stock, moderation jardin.
-5. Logout admin: verification redirection et fermeture de session.
+- Requêtes préparées PDO sur les entrées dynamiques.
+- Vérification CSRF sur les formulaires et endpoints sensibles.
+- Durcissement session/cookies déjà centralisé par la configuration.
+- Validation upload côté serveur (extension, taille, MIME réel).
+- Flux paiement orienté sécurité (pas de collecte locale de carte).
 
-## 6) Limites connues
+## 4) Nettoyage technique
 
-- Validation fonctionnelle navigateur non automatisable ici: a confirmer en execution reelle.
-- Le endpoint historique `traitement_paiement.php` reste desactive par redirection (comportement volontaire).
+- Alignement des pages refactorées sur le bootstrap commun.
+- Suppression des duplications de styles quick-nav, centralisées dans style.css.
+- Correction des doublons de navigation visibles sur certaines pages.
+- Ajustements de cohérence et d'accessibilité front (prefers-reduced-motion).
 
-## 7) Recommandation immediate
+## 5) Qualité visuelle et UX
 
-- Faire une passe de recette complete en local et capturer 6-8 captures d'ecran pour la soutenance.
+- Effets d'images harmonisés sur le sanctuaire et les cérémonies.
+- Rythmes d'animation adoucis pour une expérience plus cohérente.
+- Parcours utilisateur fluidifié avec sorties claires vers les pages clés.
+
+## 6) Recette finale à exécuter (Laragon)
+
+1. Vérifier la navigation globale: accueil -> catalogue -> sanctuaire -> cérémonies -> contact -> mentions.
+2. Vérifier panier: ajout, compteur, suppression, retour panier.
+3. Vérifier paiement démo: panier -> create-checkout-session -> payment-form -> process-payment -> payment-success.
+4. Vérifier administration: login -> ajout produit -> modification/suppression -> gestion stock -> modération jardin.
+5. Vérifier logout admin et retour sur zone publique.
+6. Vérifier affichage responsive rapide (desktop/mobile) sur les pages thématiques.
+
+## 7) Limites connues
+
+- La validation navigateur est manuelle dans ce livrable (pas de suite automatisée end-to-end).
+- Le fichier traitement_paiement.php historique reste désactivé par redirection (choix volontaire).
+
+## 8) Recommandations immédiates pour la soutenance
+
+1. Préparer 6 à 8 captures écran des parcours critiques (front, panier, paiement, admin).
+2. Montrer la séparation MVC et le bootstrap commun en ouverture technique.
+3. Mettre en avant les protections sécurité implémentées avec exemples concrets.
+4. Terminer la démo par le parcours complet utilisateur + admin.
