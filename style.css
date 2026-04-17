@@ -161,6 +161,37 @@ nav a.active {
     border-bottom: 3px solid var(--gold);
 }
 
+/* Navigation rapide commune (pages the-matiques / info) */
+.quick-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 5%;
+    background: rgba(0, 0, 0, 0.92);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.quick-nav a {
+    color: #d4af37;
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.05);
+    transition: all 0.25s ease;
+}
+
+.quick-nav a:hover {
+    background: rgba(212, 175, 55, 0.14);
+    border-color: rgba(212, 175, 55, 0.55);
+    transform: translateY(-1px);
+}
+
 .hero-content {
     flex: 1;
     display: flex;
@@ -656,6 +687,7 @@ h1 {
     margin: 15px 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;

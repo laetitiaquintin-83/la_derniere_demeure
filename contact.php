@@ -1,5 +1,5 @@
 <?php 
-require_once 'config.php'; 
+require_once __DIR__ . '/app/bootstrap.php';
 
 // Calcul du nombre total d'articles pour le compteur du menu
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="csrf-token" content="<?php echo genererTokenCSRF(); ?>">
     <title>Conciergerie | La Dernière Demeure</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Styles spécifiques pour le formulaire de luxe */
@@ -124,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body style="background: #000; margin: 0; padding: 0;">
-    
+
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
             <a href="index.php">✦ Accueil</a>
@@ -149,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <?php if (!empty($message_succes)): ?>
             <div class="success-msg">
-                <?php echo $message_succes; ?>
+                <?php echo htmlspecialchars($message_succes); ?>
             </div>
         <?php endif; ?>
 

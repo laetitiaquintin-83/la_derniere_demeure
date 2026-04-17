@@ -8,7 +8,7 @@
  * Stripe s'occupe de tout via son formulaire tokenisé
  */
 
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
 $payment_id = $_GET['payment_id'] ?? null;
 
@@ -37,6 +37,30 @@ $montant = number_format($payment['amount'], 2, ',', ' ');
             background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
             border: 1px solid #333;
             border-radius: 8px;
+        }
+        .payment-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        .payment-nav a {
+            color: #d4af37;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.82rem;
+            letter-spacing: 1px;
+            padding: 10px 14px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            border-radius: 999px;
+            background: rgba(212, 175, 55, 0.06);
+            transition: all 0.25s ease;
+        }
+        .payment-nav a:hover {
+            background: rgba(212, 175, 55, 0.16);
+            border-color: rgba(212, 175, 55, 0.65);
+            transform: translateY(-1px);
         }
         .payment-header {
             font-family: 'Cinzel', serif;
@@ -159,6 +183,29 @@ $montant = number_format($payment['amount'], 2, ',', ' ');
             justify-content: center;
             flex-wrap: wrap;
         }
+        .back-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+        .back-actions a {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            color: #e0e0e0;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            background: rgba(212, 175, 55, 0.05);
+            transition: all 0.25s ease;
+        }
+        .back-actions a:hover {
+            background: rgba(212, 175, 55, 0.14);
+            color: #fff;
+        }
         .badge {
             text-align: center;
             color: #999;
@@ -183,6 +230,12 @@ $montant = number_format($payment['amount'], 2, ',', ' ');
 </head>
 <body style="background: #000; color: #e0e0e0;">
     <div class="payment-container">
+        <div class="payment-nav">
+            <a href="index.php">Retour à l'accueil</a>
+            <a href="catalogue.php">Voir le catalogue</a>
+            <a href="panier.php">Revenir au panier</a>
+        </div>
+
         <div class="payment-header">
             <h1>Finaliser votre Paiement</h1>
             <p style="color: #999; margin-top: 10px;">Session sécurisée par Stripe</p>
@@ -226,6 +279,11 @@ $montant = number_format($payment['amount'], 2, ',', ' ');
             <button type="submit" class="submit-btn" id="submit-btn">
                 Payer <?php echo $montant; ?> € de façon Sécurisée
             </button>
+
+            <div class="back-actions">
+                <a href="panier.php">Annuler et revenir au panier</a>
+                <a href="index.php">Retour à l'accueil</a>
+            </div>
         </form>
 
         <div class="security-badges">

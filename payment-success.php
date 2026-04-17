@@ -6,7 +6,7 @@
  * Affiche les détails de la commande
  */
 
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
 $payment_id = $_GET['session_id'] ?? $_GET['payment_id'] ?? null;
 
@@ -98,6 +98,24 @@ if (!$payment_id) {
             margin-top: 30px;
             justify-content: center;
         }
+        .top-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .top-links a {
+            color: #d4af37;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            padding: 8px 14px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            border-radius: 999px;
+            background: rgba(212, 175, 55, 0.06);
+        }
         .btn {
             padding: 12px 30px;
             border: none;
@@ -129,6 +147,12 @@ if (!$payment_id) {
 </head>
 <body style="background: #000; color: #e0e0e0;">
     <div class="success-container">
+        <div class="top-links">
+            <a href="index.php">Accueil</a>
+            <a href="catalogue.php">Catalogue</a>
+            <a href="panier.php">Panier</a>
+        </div>
+
         <div class="success-icon">✓</div>
         
         <h1 class="success-title">Paiement Confirmé</h1>

@@ -1,6 +1,5 @@
 <?php 
-session_start();
-require_once 'config.php'; 
+require_once __DIR__ . '/app/bootstrap.php';
 
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
 ?>
@@ -19,6 +18,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             display: flex;
             flex-wrap: wrap;
             min-height: 600px;
+            overflow: hidden;
         }
         .foret-text {
             flex: 1;
@@ -36,6 +36,74 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             min-width: 300px;
             background-size: cover;
             background-position: center;
+            position: relative;
+            overflow: hidden;
+            transform: scale(1.01);
+            filter: brightness(0.92) contrast(1.05) saturate(1.02);
+            transition: transform 0.9s ease, filter 0.9s ease;
+            animation: sanctuaryBreath 9s ease-in-out infinite;
+        }
+        .foret-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 22% 35%, rgba(212, 175, 55, 0.17), transparent 45%),
+                linear-gradient(160deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.45));
+            opacity: 0.7;
+            z-index: 1;
+            transition: opacity 0.9s ease;
+            pointer-events: none;
+        }
+        .foret-image::after {
+            content: '';
+            position: absolute;
+            inset: -25% -40%;
+            background: linear-gradient(100deg, transparent 35%, rgba(255, 232, 170, 0.18) 50%, transparent 65%);
+            transform: translateX(-45%);
+            animation: sanctuarySweep 11s ease-in-out infinite;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .foret-image--secondary {
+            animation-delay: 1.2s;
+        }
+        .foret-image--secondary::after {
+            animation-delay: 1.5s;
+        }
+        .foret-split:hover .foret-image {
+            transform: scale(1.05);
+            filter: brightness(1.02) contrast(1.08) saturate(1.08);
+        }
+        .foret-split:hover .foret-image::before {
+            opacity: 0.88;
+        }
+        @keyframes sanctuaryBreath {
+            0%, 100% {
+                transform: scale(1.01);
+            }
+            50% {
+                transform: scale(1.045);
+            }
+        }
+        @keyframes sanctuarySweep {
+            0%, 100% {
+                opacity: 0;
+                transform: translateX(-45%);
+            }
+            40%, 60% {
+                opacity: 0.75;
+                transform: translateX(45%);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .foret-image,
+            .foret-image::after {
+                animation: none !important;
+            }
+            .foret-split:hover .foret-image {
+                transform: none;
+            }
         }
         .script-font {
             font-family: 'Great Vibes', cursive;
@@ -78,7 +146,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     </style>
 </head>
 <body style="background: #000; margin: 0; padding: 0;">
-    
+
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 20;">
         <nav>
             <a href="index.php">✦ Accueil</a>
@@ -125,7 +193,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p>Ce voyage, bien que mystique, s'inscrit dans un cadre solennel et pérenne. En France, ces bois du souvenir — à l'image des sanctuaires d'Arbas ou de Nancy — sont les gardiens de votre tranquillité.</p>
             <p style="margin-top: 15px; color: #888;">La loi et la nature veillent ensemble, assurant que votre repos sera aussi immuable et sacré que le cycle éternel des saisons.</p>
         </div>
-        <div class="foret-image" style="background-image: url('images/foret-repos-souverain.jpg');"></div>
+        <div class="foret-image foret-image--secondary" style="background-image: url('images/foret-repos-souverain.jpg');"></div>
     </section>
 
     <section style="padding: 80px 5%; text-align: center; background: #000;">

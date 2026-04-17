@@ -1,6 +1,6 @@
 <?php
 // On inclut la config qui gère déjà session_start() et PDO
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
 // 1. VÉRIFICATION DE L'ACCÈS ADMIN
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {

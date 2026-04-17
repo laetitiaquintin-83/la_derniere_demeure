@@ -1,24 +1,13 @@
 <?php
-// On inclut directement la configuration (qui démarre la session)
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
-// Vérifier l'authentification
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
     header('Location: login.php');
     exit;
 }
 
-// Calcul du compteur du panier pour la barre de navigation
-$nombre_articles = 0;
-if (isset($_SESSION['panier'])) {
-    $nombre_articles = array_sum($_SESSION['panier']);
-}
-
-// Récupérer tous les produits de la base de données
-// Note : prepare() est très bien, même si un simple query() suffit quand il n'y a pas de paramètres dynamiques (WHERE).
-$query = $pdo->prepare("SELECT id, nom, categorie, prix, stock, image_path FROM catalogue_funeraire ORDER BY id DESC");
-$query->execute();
-$produits = $query->fetchAll(PDO::FETCH_ASSOC);
+$nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
+$produits = (new AdminDashboardModel($pdo))->getProductsForInventory();
 ?>
 <!DOCTYPE html>
 <html lang="fr">

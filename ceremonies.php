@@ -1,6 +1,5 @@
 <?php 
-session_start();
-require_once 'config.php'; 
+require_once __DIR__ . '/app/bootstrap.php';
 
 // Calcul du nombre total d'articles pour le compteur du menu
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
@@ -59,7 +58,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             inset: 0;
             background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.15) 50%, transparent 70%);
             opacity: 0;
-            animation: light-sweep 4s ease-in-out infinite;
+            animation: light-sweep 8s ease-in-out infinite;
             z-index: 2;
         }
 
@@ -104,10 +103,22 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             font-size: 2.2em;
             margin-bottom: 20px;
         }
+        @media (prefers-reduced-motion: reduce) {
+            .ceremonie-image,
+            .ceremonie-image::after {
+                animation: none !important;
+            }
+            .ceremonie-split:hover .ceremonie-image {
+                transform: none;
+            }
+            .quick-nav a:hover {
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body style="background: #000; margin: 0; padding: 0;">
-    
+
     <header style="background: rgba(0,0,0,0.9); padding: 15px 5%; border-bottom: 1px solid #333;">
         <nav>
             <a href="index.php">✦ Accueil</a>
@@ -182,6 +193,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
             <p style="font-style: italic; color: #888; margin-bottom: 30px;">Laissez une trace, une pensée, un souvenir de votre adieu personnalisé.</p>
 
             <form action="traitement_jardin.php" method="POST" enctype="multipart/form-data" class="jardin-form" style="background: #111; padding: 30px; border: 1px solid #222; text-align: left;">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
                 <div style="display: flex; gap: 15px; margin-bottom: 15px;">
                     <input type="text" name="nom_proprietaire" placeholder="Votre Nom" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white; font-family: 'Cinzel', serif; text-align: center;">
                     <input type="text" name="nom_animal" placeholder="Nom de l'ange" required style="flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: white; font-family: 'Cinzel', serif; text-align: center;">

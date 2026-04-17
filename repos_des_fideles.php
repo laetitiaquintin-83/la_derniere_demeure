@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php'; 
+require_once __DIR__ . '/app/bootstrap.php';
 
 // Calcul du compteur panier
 $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
@@ -373,6 +373,7 @@ $nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) :
     </style>
 </head>
 <body>
+
     <header class="hero-section animal-hero">
         <nav>
             <a href="index.php" class="active">✦ Accueil</a>

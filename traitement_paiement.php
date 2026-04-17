@@ -1,6 +1,6 @@
 <?php
 // On inclut directement la config (qui gère la session et la connexion PDO)
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
 // Endpoint historique désactivé: le paiement passe par create-checkout-session.php
 // pour éviter toute collecte locale de données carte.

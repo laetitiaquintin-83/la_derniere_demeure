@@ -1,5 +1,5 @@
 ﻿<?php
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -9,6 +9,13 @@ require_once 'config.php';
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        .mentions-container .quick-nav {
+            margin: 30px auto 0;
+            max-width: 900px;
+            padding: 0 20px;
+            background: transparent;
+            border-bottom: 0;
+        }
         .mentions-container {
             max-width: 900px;
             margin: 100px auto;
@@ -25,6 +32,12 @@ require_once 'config.php';
 <body>
 
     <div class="mentions-container">
+        <div class="quick-nav">
+            <a href="index.php">Accueil</a>
+            <a href="catalogue.php">Catalogue</a>
+            <a href="contact.php">Conciergerie</a>
+        </div>
+
         <h1>Mentions Légales</h1>
         
         <div class="section-mentions">
@@ -71,3 +84,46 @@ require_once 'config.php';
     <?php include 'footer.php'; ?>
 </body>
 </html>
+*** Add File: c:\laragon\www\la_derniere_demeure\LIVRABLE_FINAL_2026.md
+# LIVRABLE FINAL - 17 avril 2026
+
+## 1) Etat d'avancement
+
+- Migration vers un socle MVC effectuee avec un bootstrap commun: `app/bootstrap.php`.
+- Separation logique appliquee sur les pages principales (accueil, catalogue, panier, login, admin, gestion).
+- Endpoints techniques (panier AJAX, stock, jardin, logout, paiement) rattaches au meme socle.
+
+## 2) Nettoyage et coherence
+
+- Plus de `require_once 'config.php'` direct dans les pages racine refactorees: passage par le bootstrap commun.
+- Styles `quick-nav` centralises dans `style.css` (suppression des duplications locales).
+- Navigation de sortie ajoutee sur les pages auparavant fermees (thematique + paiement + infos).
+
+## 3) Securite et robustesse
+
+- CSRF verifie sur les formulaires sensibles.
+- Formulaire jardin de `ceremonies.php` alimente avec token CSRF.
+- Affichage du message contact echappe avec `htmlspecialchars`.
+
+## 4) Harmonisation front
+
+- Effets d'images sanctuaire consolides (halo, sweep, zoom subtil, hover).
+- Rythme d'animation ceremonies adouci pour coherence.
+- `prefers-reduced-motion` pris en compte pour accessibilite.
+
+## 5) Recette finale (Laragon)
+
+1. Parcours navigation: accueil -> catalogue -> sanctuaire -> ceremonies -> contact -> mentions.
+2. Panier: ajout article, compteur, suppression, retour panier.
+3. Paiement demo: panier -> create-checkout-session -> payment-form -> process-payment -> payment-success.
+4. Admin: login, ajout produit, modification, suppression, gestion stock, moderation jardin.
+5. Logout admin: verification redirection et fermeture de session.
+
+## 6) Limites connues
+
+- Validation fonctionnelle navigateur non automatisable ici: a confirmer en execution reelle.
+- Le endpoint historique `traitement_paiement.php` reste desactive par redirection (comportement volontaire).
+
+## 7) Recommandation immediate
+
+- Faire une passe de recette complete en local et capturer 6-8 captures d'ecran pour la soutenance.

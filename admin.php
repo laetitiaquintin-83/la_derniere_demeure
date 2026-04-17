@@ -1,130 +1,11 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
+require_once __DIR__ . '/app/Models/AdminDashboardModel.php';
+require_once __DIR__ . '/app/Controllers/AdminDashboardController.php';
 
-// 1. Vérifier l'authentification (Sécurité Gardien)
-if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
-    header('Location: login.php');
-    exit;
-}
-
-$message = "";
-$messageType = ""; 
-
-// --- LOGIQUE DE MODÉRATION DU JARDIN DES SOUVENIRS ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['moderation_action'])) {
-    if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
-        $message = "Erreur de sécurité : action de modération invalide.";
-        $messageType = "error";
-    } else {
-        $message_id = $_POST['message_id'] ?? '';
-        if (!ctype_digit((string)$message_id)) {
-            $message = "Identifiant de message invalide.";
-            $messageType = "error";
-        } elseif ($_POST['moderation_action'] === 'approve') {
-            $pdo->prepare("UPDATE livre_dor_animaux SET approuve = 1 WHERE id = ?")->execute([(int)$message_id]);
-            log_audit_event('APPROVE', 'livre_dor_animaux', (int)$message_id, null, ['approuve' => 1]);
-            $message = "La pensée a été scellée dans le Jardin.";
-            $messageType = "success";
-        } elseif ($_POST['moderation_action'] === 'delete') {
-            $stmt_old = $pdo->prepare("SELECT * FROM livre_dor_animaux WHERE id = ? LIMIT 1");
-            $stmt_old->execute([(int)$message_id]);
-            $old_message = $stmt_old->fetch(PDO::FETCH_ASSOC) ?: null;
-            $pdo->prepare("DELETE FROM livre_dor_animaux WHERE id = ?")->execute([(int)$message_id]);
-            log_audit_event('DELETE', 'livre_dor_animaux', (int)$message_id, $old_message, null);
-            $message = "La pensée a été bannie du registre.";
-            $messageType = "error";
-        }
-    }
-}
-
-// Génération du jeton CSRF
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrf_token = $_SESSION['csrf_token'];
-
-// Compteur panier
-$nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
-
-// 2. Traitement du Formulaire d'Ajout d'Article
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $message = "Erreur de sécurité : le sceau CSRF est invalide.";
-        $messageType = "error";
-    } else {
-        $nom = trim($_POST['nom'] ?? '');
-        $categorie = trim($_POST['categorie'] ?? '');
-        $prix = $_POST['prix'] ?? '';
-        $stock = $_POST['stock'] ?? '';
-        $description = trim($_POST['description'] ?? '');
-
-        if (empty($nom) || empty($categorie) || $prix === "" || $stock === "") {
-            $message = "Erreur : tous les champs obligatoires doivent être complétés.";
-            $messageType = "error";
-        } elseif (!isset($_FILES["image"]) || $_FILES["image"]["error"] !== UPLOAD_ERR_OK) {
-                $message = "Erreur : une image est requise.";
-            $messageType = "error";
-        } else {
-            $target_dir = "images/catalogue/";
-            if (!file_exists($target_dir)) { mkdir($target_dir, 0777, true); }
-
-            $file_extension = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
-            
-            // SÉCURITÉ: Extensions blanches seulement
-            $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
-            if (!in_array($file_extension, $allowed_extensions)) {
-                $message = "Erreur : formats acceptés JPG, PNG, WebP uniquement.";
-                $messageType = "error";
-            } else {
-                // SÉCURITÉ: Vérifier la VRAIE MIME type (côté serveur, pas le header du client)
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $real_mime = finfo_file($finfo, $_FILES["image"]["tmp_name"]);
-                finfo_close($finfo);
-                
-                $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp'];
-                if (!in_array($real_mime, $allowed_mimes)) {
-                    $message = "Erreur de sécurité : Le fichier uploadé n'est pas une image valide.";
-                    $messageType = "error";
-                } else {
-                    // SÉCURITÉ: Vérifier que la taille est raisonnable (max 5MB)
-                    if ($_FILES["image"]["size"] > 5 * 1024 * 1024) {
-                        $message = "Erreur : La taille du fichier dépasse 5MB.";
-                        $messageType = "error";
-                    } else {
-                        $file_name = time() . "_" . bin2hex(random_bytes(4)) . "." . $file_extension;
-                        $target_file = $target_dir . $file_name;
-                        
-                        // SÉCURITÉ: Résoudre et valider le chemin final
-                        $real_path = realpath($target_dir) . DIRECTORY_SEPARATOR . $file_name;
-                        if (strpos($real_path, realpath($target_dir)) !== 0) {
-                            $message = "Erreur de sécurité : Chemin invalide (tentative de traversée répertoire).";
-                            $messageType = "error";
-                        } elseif (move_uploaded_file($_FILES["image"]["tmp_name"], $real_path)) {
-                            try {
-                                $sql = "INSERT INTO catalogue_funeraire (nom, description, prix, image_path, categorie, stock) VALUES (?, ?, ?, ?, ?, ?)";
-                                $stmt = $pdo->prepare($sql);
-                                $stmt->execute([$nom, $description, (float)$prix, $target_file, $categorie, (int)$stock]);
-                                log_audit_event('CREATE', 'catalogue_funeraire', $pdo->lastInsertId(), null, [
-                                    'nom' => $nom,
-                                    'categorie' => $categorie,
-                                    'prix' => (float)$prix,
-                                    'stock' => (int)$stock,
-                                    'image_path' => $target_file,
-                                ]);
-                                $message = "L'article « $nom » a été ajouté avec succès.";
-                                $messageType = "success";
-                            } catch (PDOException $e) {
-                                if (file_exists($target_file)) { unlink($target_file); }
-                                $message = "Erreur SQL : " . $e->getMessage();
-                                $messageType = "error";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+$adminController = new AdminDashboardController(new AdminDashboardModel($pdo));
+$adminData = $adminController->index();
+extract($adminData, EXTR_SKIP);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -270,9 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
     <div class="admin-container">
         <h2 class="admin-title" style="font-size: 1.5rem;">Modération du Jardin</h2>
         
-        <?php
-        $attente = $pdo->query("SELECT * FROM livre_dor_animaux WHERE approuve = 0 ORDER BY date_publication DESC")->fetchAll();
-        if (empty($attente)): ?>
+        <?php if (empty($attente)): ?>
             <p style="text-align: center; color: #666;">Aucune nouvelle pensée en attente.</p>
         <?php else: 
             foreach ($attente as $m): ?>

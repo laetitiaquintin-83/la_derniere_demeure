@@ -1,36 +1,12 @@
-<?php 
+<?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-session_start();
-require_once 'config.php'; 
-$nombre_articles = isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0;
+require_once __DIR__ . '/app/bootstrap.php';
 
-// Récupération dynamique des catégories + meilleure image par catégorie
-try {
-    $catQuery = $pdo->query("SELECT DISTINCT categorie FROM catalogue_funeraire WHERE categorie IS NOT NULL LIMIT 4");
-    $categories = $catQuery->fetchAll(PDO::FETCH_COLUMN);
-
-    // Récupérer l'image principale pour chaque catégorie
-    $category_images = [];
-    foreach ($categories as $cat) {
-        $imgStmt = $pdo->prepare("SELECT image_path FROM catalogue_funeraire WHERE categorie = ? ORDER BY id DESC LIMIT 1");
-        $imgStmt->execute([$cat]);
-        $category_images[$cat] = $imgStmt->fetchColumn() ?: 'images/default.jpg';
-    }
-} catch (Exception $e) {
-    error_log("Erreur base de données: " . $e->getMessage());
-    $categories = [];
-    $category_images = [];
-}
-
-$titres_poetiques = [
-    'Cercueils' => 'Vaisseaux de Mémoire',
-    'Urnes'     => 'Le Souffle des Anciens',
-    'Fleurs'    => 'L\'Offrande Éternelle',
-    'Stèles'    => 'Les Gardiens de l\'Éternité',
-    'Animaux'   => 'Le Repos des Fidèles'
-];
+$homeController = new HomeController(new HomePageModel($pdo));
+$homeData = $homeController->index();
+extract($homeData, EXTR_SKIP);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

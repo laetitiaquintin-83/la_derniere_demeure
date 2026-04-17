@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/app/bootstrap.php';
 
 // 1. Le verrou du Gardien (Sécurité)
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {

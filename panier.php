@@ -1,48 +1,9 @@
 <?php
-require_once 'config.php';
-// On retire session_start() car config.php s'en charge déjà.
+require_once __DIR__ . '/app/bootstrap.php';
 
-// --- LOGIQUE DE SUPPRESSION (Sécurisée) ---
-if (isset($_GET['remove'])) {
-    // On vérifie que le jeton CSRF est présent dans l'URL et valide
-    if (!isset($_GET['token']) || !validerTokenCSRF($_GET['token'])) {
-        die("Erreur de sécurité : Sceau de suppression invalide.");
-    }
-
-    // On force le type en entier pour plus de sécurité
-    $id_a_supprimer = (int)$_GET['remove'];
-    
-    if (isset($_SESSION['panier'][$id_a_supprimer])) {
-        unset($_SESSION['panier'][$id_a_supprimer]);
-    }
-    // On recharge la page pour actualiser les calculs (le motif PRG : Post/Redirect/Get)
-    header("Location: panier.php");
-    exit();
-}
-
-// 1. On récupère les ID et quantités en session
-$panier_session = $_SESSION['panier'] ?? [];
-$panier_details = [];
-$total = 0;
-$nombre_articles = array_sum($panier_session);
-
-// 2. Si le panier n'est pas vide, on va chercher les vraies infos en base de données
-if (!empty($panier_session)) {
-    // Excellente pratique : préparation hors de la boucle !
-    $stmt = $pdo->prepare("SELECT id, nom, prix FROM catalogue_funeraire WHERE id = ?");
-    
-    foreach ($panier_session as $id => $quantite) {
-        $stmt->execute([$id]);
-        $produit = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($produit) {
-            $produit['quantite'] = $quantite;
-            $produit['sous_total'] = $produit['prix'] * $quantite;
-            $panier_details[] = $produit; 
-            $total += $produit['sous_total']; 
-        }
-    }
-}
+$cartController = new CartController(new CartModel($pdo));
+$cartData = $cartController->index();
+extract($cartData, EXTR_SKIP);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

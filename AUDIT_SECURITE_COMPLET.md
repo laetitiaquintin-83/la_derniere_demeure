@@ -40,6 +40,27 @@
 
 ---
 
+## 🧭 RÉCAP TECHNIQUE ACTUEL
+
+### Socle MVC mis en place
+
+- `app/bootstrap.php` centralise le chargement de `config.php` et l'autoload des classes MVC.
+- `index.php`, `catalogue.php`, `panier.php` et `login.php` délèguent désormais leur logique à des contrôleurs dédiés.
+- Le back-office passe par `AdminDashboardController` et `AdminDashboardModel` pour l'ajout d'articles, la modération et l'inventaire.
+- Les endpoints serveur critiques ont été isolés dans des contrôleurs dédiés pour l'ajout panier, la mise à jour stock, la déconnexion et le jardin des souvenirs.
+
+### Navigation et retour utilisateur
+
+- Les pages thématiques et d'information disposent maintenant de sorties visibles vers l'accueil, le catalogue, le panier et la conciergerie.
+- La page de paiement propose des liens explicites vers le panier, l'accueil et le catalogue afin d'éviter tout écran bloquant.
+
+### Vérification
+
+- La syntaxe PHP a été vérifiée après chaque lot de modifications sur les fichiers touchés.
+- Le comportement exact reste à valider en exécution réelle sous Laragon pour les parcours AJAX, la soumission de formulaires et le paiement démo.
+
+---
+
 ## 🔍 ANALYSE PAR VULNÉRABILITÉ OWASP
 
 ### 1️⃣ SQL INJECTION
