@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Laisser passer les ressources et dossiers existants
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Rediriger tout le reste vers le dossier public
+RewriteRule ^(.*)$ public/$1 [L]

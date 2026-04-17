@@ -1,25 +1,25 @@
-<?php
-// On inclut directement la config (qui gère la session et la connexion PDO)
-require_once __DIR__ . '/app/bootstrap.php';
+﻿<?php
+// On inclut directement la config (qui gÃ¨re la session et la connexion PDO)
+require_once __DIR__ . '/../app/bootstrap.php';
 
-// Endpoint historique désactivé: le paiement passe par create-checkout-session.php
-// pour éviter toute collecte locale de données carte.
+// Endpoint historique dÃ©sactivÃ©: le paiement passe par create-checkout-session.php
+// pour Ã©viter toute collecte locale de donnÃ©es carte.
 header('Location: panier.php');
 exit;
 
-// On vérifie que la requête vient bien du formulaire en POST
+// On vÃ©rifie que la requÃªte vient bien du formulaire en POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
     exit;
 }
 
-// Vérifier le token CSRF
+// VÃ©rifier le token CSRF
 if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
-    die("Erreur de sécurité : le sceau de la requête est corrompu.");
+    die("Erreur de sÃ©curitÃ© : le sceau de la requÃªte est corrompu.");
 }
 
 // ==========================================
-// VALIDATION SÉCURISÉE DES DONNÉES PAIEMENT
+// VALIDATION SÃ‰CURISÃ‰E DES DONNÃ‰ES PAIEMENT
 // ==========================================
 
 // Fonction de validation: Algorithme Luhn (carte bancaire)
@@ -40,42 +40,42 @@ function valideeLuhn($numero) {
 
 // Validation basique des champs du formulaire
 if (empty($_POST['nom_titulaire']) || empty($_POST['numero_carte'])) {
-    die("Erreur : Les informations du rituel d'engagement sont incomplètes.");
+    die("Erreur : Les informations du rituel d'engagement sont incomplÃ¨tes.");
 }
 
-// VALIDATION SÉCURISÉE: Numéro de carte (Luhn algorithm)
+// VALIDATION SÃ‰CURISÃ‰E: NumÃ©ro de carte (Luhn algorithm)
 $numero_carte = preg_replace('/\D/', '', $_POST['numero_carte'] ?? '');
 if (!valideeLuhn($numero_carte)) {
-    die("Erreur de sécurité : Numéro de carte invalide (non conforme Luhn).");
+    die("Erreur de sÃ©curitÃ© : NumÃ©ro de carte invalide (non conforme Luhn).");
 }
 
-// VALIDATION SÉCURISÉE: Date d'expiration (format MM/YY)
+// VALIDATION SÃ‰CURISÃ‰E: Date d'expiration (format MM/YY)
 $date_exp = $_POST['date_expiration'] ?? '';
 if (!preg_match('/^(0[1-9]|1[0-2])\/\d{2}$/', $date_exp)) {
-    die("Erreur de sécurité : Format date invalide. Utilisez MM/YY.");
+    die("Erreur de sÃ©curitÃ© : Format date invalide. Utilisez MM/YY.");
 }
-// Vérifier que la carte n'est pas expirée
+// VÃ©rifier que la carte n'est pas expirÃ©e
 list($mois, $year2) = explode('/', $date_exp);
 $year_complet = 2000 + (int)$year2;
 $mois_courant = (int)date('m');
 $year_courant = (int)date('Y');
 if ($year_complet < $year_courant || ($year_complet == $year_courant && $mois < $mois_courant)) {
-    die("Erreur de sécurité : Carte expirée.");
+    die("Erreur de sÃ©curitÃ© : Carte expirÃ©e.");
 }
 
-// VALIDATION SÉCURISÉE: CVV (3-4 chiffres)
+// VALIDATION SÃ‰CURISÃ‰E: CVV (3-4 chiffres)
 $cvv = preg_replace('/\D/', '', $_POST['cvv'] ?? '');
 if (!preg_match('/^[0-9]{3,4}$/', $cvv)) {
-    die("Erreur de sécurité : CVV invalide. Doit être 3-4 chiffres.");
+    die("Erreur de sÃ©curitÃ© : CVV invalide. Doit Ãªtre 3-4 chiffres.");
 }
 
-// VALIDATION SÉCURISÉE: Nom du titulaire
-$nom_titulaire = preg_replace('/[^a-zA-Zéèê\s\-\']/', '', $_POST['nom_titulaire']);
+// VALIDATION SÃ‰CURISÃ‰E: Nom du titulaire
+$nom_titulaire = preg_replace('/[^a-zA-ZÃ©Ã¨Ãª\s\-\']/', '', $_POST['nom_titulaire']);
 if (strlen($nom_titulaire) < 3 || strlen($nom_titulaire) > 50) {
     die("Erreur : Nom du titulaire invalide.");
 }
 
-// On vérifie qu'il y a bien quelque chose à commander
+// On vÃ©rifie qu'il y a bien quelque chose Ã  commander
 if (empty($_SESSION['panier'])) {
     header('Location: panier.php');
     exit;
@@ -86,11 +86,11 @@ if (empty($_SESSION['panier'])) {
 // ==========================================
 
 try {
-    // 1. DÉMARRAGE DE LA TRANSACTION
-    // À partir d'ici, aucune modification en base n'est définitive tant qu'on ne fait pas "commit()"
+    // 1. DÃ‰MARRAGE DE LA TRANSACTION
+    // Ã€ partir d'ici, aucune modification en base n'est dÃ©finitive tant qu'on ne fait pas "commit()"
     $pdo->beginTransaction(); 
 
-    // Préparer la requête de décrémentation du stock
+    // PrÃ©parer la requÃªte de dÃ©crÃ©mentation du stock
     $stmt = $pdo->prepare("UPDATE catalogue_funeraire SET stock = stock - ? WHERE id = ? AND stock >= ?");
     
     foreach ($_SESSION['panier'] as $id => $quantite) {
@@ -98,48 +98,48 @@ try {
             
             $stmt->execute([(int)$quantite, (int)$id, (int)$quantite]);
             
-            // 2. VÉRIFICATION DU RÉSULTAT
-            // Si rowCount est à 0, c'est que la condition "stock >= ?" a bloqué la mise à jour !
+            // 2. VÃ‰RIFICATION DU RÃ‰SULTAT
+            // Si rowCount est Ã  0, c'est que la condition "stock >= ?" a bloquÃ© la mise Ã  jour !
             if ($stmt->rowCount() === 0) {
-                // On déclenche volontairement une exception pour arrêter le processus
+                // On dÃ©clenche volontairement une exception pour arrÃªter le processus
                 throw new Exception("stock_insuffisant");
             }
         }
     }
     
-    // 3. VALIDATION DÉFINITIVE
-    // Si la boucle s'est terminée sans encombre, on valide toutes les modifications d'un coup
+    // 3. VALIDATION DÃ‰FINITIVE
+    // Si la boucle s'est terminÃ©e sans encombre, on valide toutes les modifications d'un coup
     $pdo->commit();
     
-    // Le paiement est "validé" et les stocks sont à jour, on vide le panier
+    // Le paiement est "validÃ©" et les stocks sont Ã  jour, on vide le panier
     unset($_SESSION['panier']);
 
 } catch (Exception $e) {
     // 4. ANNULATION
-    // Si une erreur SQL ou notre Exception personnalisée survient, on annule TOUT ce qui s'est passé depuis beginTransaction()
+    // Si une erreur SQL ou notre Exception personnalisÃ©e survient, on annule TOUT ce qui s'est passÃ© depuis beginTransaction()
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
     
     error_log("Erreur de commande : " . $e->getMessage());
     
-    // Déterminer le type d'erreur
+    // DÃ©terminer le type d'erreur
     $error_code = $e->getMessage();
     $error_title = "L'Adieu n'a pu se conclure";
-    $error_message = "Une perturbation éthérée a empêché votre offrande.";
+    $error_message = "Une perturbation Ã©thÃ©rÃ©e a empÃªchÃ© votre offrande.";
     
     if ($error_code === 'stock_insuffisant') {
-        $error_message = "L'une de vos reliques a été réclamée par un autre fidèle. Notre inventaire a été mis à jour.";
+        $error_message = "L'une de vos reliques a Ã©tÃ© rÃ©clamÃ©e par un autre fidÃ¨le. Notre inventaire a Ã©tÃ© mis Ã  jour.";
     }
     
-    // Afficher la page d'erreur élégante
+    // Afficher la page d'erreur Ã©lÃ©gante
     ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($error_title); ?> | La Dernière Demeure</title>
+    <title><?php echo htmlspecialchars($error_title); ?> | La DerniÃ¨re Demeure</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -213,12 +213,12 @@ try {
 <body>
     <div class="error-container">
         <div class="error-box">
-            <div class="error-icon">⚰️</div>
+            <div class="error-icon">âš°ï¸</div>
             <h1 class="error-title"><?php echo htmlspecialchars($error_title); ?></h1>
             <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
             <div class="error-actions">
-                <a href="panier.php" class="btn-error">↻ Retour au Panier</a>
-                <a href="index.php" class="btn-error">✦ Retour à l'Accueil</a>
+                <a href="panier.php" class="btn-error">â†» Retour au Panier</a>
+                <a href="index.php" class="btn-error">âœ¦ Retour Ã  l'Accueil</a>
             </div>
         </div>
     </div>
@@ -233,7 +233,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sceau Apposé | La Dernière Demeure</title>
+    <title>Sceau ApposÃ© | La DerniÃ¨re Demeure</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -271,18 +271,18 @@ try {
 
     <header class="admin-nav">
         <nav>
-            <a href="index.php">✦ Retourner à l'Accueil</a>
+            <a href="index.php">âœ¦ Retourner Ã  l'Accueil</a>
         </nav>
     </header>
 
     <div class="success-container">
-        <div class="success-icon">⚜️</div>
-        <h1 class="success-title">L'Offrande est Scellée</h1>
+        <div class="success-icon">âšœï¸</div>
+        <h1 class="success-title">L'Offrande est ScellÃ©e</h1>
         <p class="success-text">
-            Votre engagement a bien été enregistré dans nos registres.<br>
-            Les préparatifs de votre commande commenceront à la tombée de la nuit.
+            Votre engagement a bien Ã©tÃ© enregistrÃ© dans nos registres.<br>
+            Les prÃ©paratifs de votre commande commenceront Ã  la tombÃ©e de la nuit.
         </p>
-        <a href="index.php" class="btn-gold" style="text-decoration: none; display: inline-block;">✦ Retourner au Sanctuaire</a>
+        <a href="index.php" class="btn-gold" style="text-decoration: none; display: inline-block;">âœ¦ Retourner au Sanctuaire</a>
     </div>
 
 </body>

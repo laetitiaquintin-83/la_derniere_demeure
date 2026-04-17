@@ -1,17 +1,17 @@
-<?php
-// On inclut la config qui gère déjà session_start() et PDO
-require_once __DIR__ . '/app/bootstrap.php';
+﻿<?php
+// On inclut la config qui gÃ¨re dÃ©jÃ  session_start() et PDO
+require_once __DIR__ . '/../app/bootstrap.php';
 
-// 1. VÉRIFICATION DE L'ACCÈS ADMIN
+// 1. VÃ‰RIFICATION DE L'ACCÃˆS ADMIN
 if (!isset($_SESSION['admin_connecte']) || $_SESSION['admin_connecte'] !== true) {
     header('Location: login.php');
     exit;
 }
 
-// 2. VÉRIFICATION DU JETON CSRF (Le bouclier)
-// On vérifie que le token envoyé dans l'URL correspond à celui en session
+// 2. VÃ‰RIFICATION DU JETON CSRF (Le bouclier)
+// On vÃ©rifie que le token envoyÃ© dans l'URL correspond Ã  celui en session
 if (!isset($_GET['token']) || !validerTokenCSRF($_GET['token'])) {
-    die("Erreur de sécurité : Le sceau de suppression est invalide ou a expiré.");
+    die("Erreur de sÃ©curitÃ© : Le sceau de suppression est invalide ou a expirÃ©.");
 }
 
 // 3. VALIDATION DE L'ID
@@ -22,13 +22,13 @@ if (!isset($_GET['id']) || !ctype_digit(strval($_GET['id']))) {
 $id = (int)$_GET['id'];
 
 try {
-    // 4. RÉCUPÉRATION DES INFOS (Pour le nettoyage du fichier)
+    // 4. RÃ‰CUPÃ‰RATION DES INFOS (Pour le nettoyage du fichier)
     $stmt = $pdo->prepare("SELECT image_path FROM catalogue_funeraire WHERE id = ?");
     $stmt->execute([$id]);
     $produit = $stmt->fetch();
 
     if (!$produit) {
-        die("L'article a déjà rejoint le néant...");
+        die("L'article a dÃ©jÃ  rejoint le nÃ©ant...");
     }
 
     // 5. SUPPRESSION PHYSIQUE DE L'IMAGE
@@ -37,15 +37,15 @@ try {
         unlink($produit['image_path']);
     }
 
-    // 6. SUPPRESSION EN BASE DE DONNÉES
+    // 6. SUPPRESSION EN BASE DE DONNÃ‰ES
     $delete_stmt = $pdo->prepare("DELETE FROM catalogue_funeraire WHERE id = ?");
     $delete_stmt->execute([$id]);
 
-    // Succès : retour à la gestion
+    // SuccÃ¨s : retour Ã  la gestion
     header("Location: gestion.php?msg=suppression_ok");
     exit();
 
 } catch (PDOException $e) {
-    error_log("Erreur lors de l'anéantissement : " . $e->getMessage());
-    die("Une force obscure a empêché la suppression de l'article.");
+    error_log("Erreur lors de l'anÃ©antissement : " . $e->getMessage());
+    die("Une force obscure a empÃªchÃ© la suppression de l'article.");
 }

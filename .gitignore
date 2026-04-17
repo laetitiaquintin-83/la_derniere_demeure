@@ -1,5 +1,5 @@
 # Configuration locale
-config.php
+app/Config/config.local.php
 
 # Dépendances
 /vendor/

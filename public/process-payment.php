@@ -1,27 +1,27 @@
-<?php
+﻿<?php
 /**
  * process-payment.php
  * 
- * Traitement du paiement sécurisé
+ * Traitement du paiement sÃ©curisÃ©
  * 
- * Important: En production, cette page reçoit un TOKEN de Stripe,
- * JAMAIS les données réelles de la carte
+ * Important: En production, cette page reÃ§oit un TOKEN de Stripe,
+ * JAMAIS les donnÃ©es rÃ©elles de la carte
  */
 
-require_once __DIR__ . '/app/bootstrap.php';
+require_once __DIR__ . '/../app/bootstrap.php';
 
 header('Content-Type: application/json');
 
-// Valider la requête
+// Valider la requÃªte
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    die(json_encode(['success' => false, 'error' => 'Méthode non autorisée']));
+    die(json_encode(['success' => false, 'error' => 'MÃ©thode non autorisÃ©e']));
 }
 
 // Valider le token CSRF
 if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
     http_response_code(403);
-    die(json_encode(['success' => false, 'error' => 'Erreur de sécurité CSRF']));
+    die(json_encode(['success' => false, 'error' => 'Erreur de sÃ©curitÃ© CSRF']));
 }
 
 $payment_id = $_POST['payment_id'] ?? null;
@@ -35,7 +35,7 @@ if (!$payment_id || !isset($_SESSION['pending_payment']) || $_SESSION['pending_p
 try {
     $payment = $_SESSION['pending_payment'];
 
-    // Initialisation défensive des tables de commande.
+    // Initialisation dÃ©fensive des tables de commande.
     $pdo->exec("CREATE TABLE IF NOT EXISTS commandes (
         id INT PRIMARY KEY AUTO_INCREMENT,
         montant_total DECIMAL(10,2) NOT NULL,
@@ -53,8 +53,8 @@ try {
         INDEX idx_commande_id (commande_id)
     )");
 
-    // Validation non sensible (aucune donnée carte n'est traitée ici)
-    $cardholder = preg_replace('/[^a-zA-Zéèê\s\-\']/', '', $_POST['cardholder'] ?? '');
+    // Validation non sensible (aucune donnÃ©e carte n'est traitÃ©e ici)
+    $cardholder = preg_replace('/[^a-zA-ZÃ©Ã¨Ãª\s\-\']/', '', $_POST['cardholder'] ?? '');
     if (strlen($cardholder) < 2 || strlen($cardholder) > 100) {
         throw new Exception('Nom du titulaire invalide');
     }
@@ -64,7 +64,7 @@ try {
     }
     
     // ====================================================
-    // MODE DÉMO: Simuler la réponse Stripe
+    // MODE DÃ‰MO: Simuler la rÃ©ponse Stripe
     // ====================================================
     // En production: appeler l'API Stripe avec le token
     /*
@@ -72,25 +72,25 @@ try {
     $paymentIntent = $stripe->paymentIntents->retrieve($payment_id);
     
     if ($paymentIntent->status !== 'succeeded') {
-        throw new Exception('Paiement non autorisé par la banque');
+        throw new Exception('Paiement non autorisÃ© par la banque');
     }
     */
     
-    // Simuler le succès
-    $payment_status = 'succeeded'; // En démo, paiement réussi
+    // Simuler le succÃ¨s
+    $payment_status = 'succeeded'; // En dÃ©mo, paiement rÃ©ussi
     
     if ($payment_status !== 'succeeded') {
-        throw new Exception('Paiement refusé par la banque');
+        throw new Exception('Paiement refusÃ© par la banque');
     }
     
     // ====================================================
-    // CRÉER LA COMMANDE EN BASE DE DONNÉES
+    // CRÃ‰ER LA COMMANDE EN BASE DE DONNÃ‰ES
     // ====================================================
     
     $pdo->beginTransaction();
     
     try {
-        // Créer la commande
+        // CrÃ©er la commande
         $stmt = $pdo->prepare("INSERT INTO commandes (montant_total, statut, email, cree_a) 
                                 VALUES (?, 'payee', ?, NOW())");
         $stmt->execute([
@@ -105,7 +105,7 @@ try {
                 continue;
             }
             
-            // Récupérer le prix
+            // RÃ©cupÃ©rer le prix
             $stmt_prix = $pdo->prepare("SELECT prix FROM catalogue_funeraire WHERE id = ? LIMIT 1");
             $stmt_prix->execute([(int)$id]);
             $produit = $stmt_prix->fetch(PDO::FETCH_ASSOC);
@@ -122,7 +122,7 @@ try {
             }
         }
         
-        // Décrémenter les stocks
+        // DÃ©crÃ©menter les stocks
         $stmt_stock = $pdo->prepare("UPDATE catalogue_funeraire SET stock = stock - ? WHERE id = ? AND stock >= ?");
         
         foreach ($payment['items'] as $id => $quantite) {
@@ -147,14 +147,14 @@ try {
         ]);
         
         // ====================================================
-        // NETTOYER LA SESSION ET RETOURNER LE SUCCÈS
+        // NETTOYER LA SESSION ET RETOURNER LE SUCCÃˆS
         // ====================================================
         
         unset($_SESSION['panier']);
         unset($_SESSION['pending_payment']);
         
         // Enregistrer le paiement en logs
-        error_log("✓ Paiement réussi - Commande #$commande_id - Montant: " . $payment['amount'] . "€ - Timestamp: " . date('Y-m-d H:i:s'));
+        error_log("âœ“ Paiement rÃ©ussi - Commande #$commande_id - Montant: " . $payment['amount'] . "â‚¬ - Timestamp: " . date('Y-m-d H:i:s'));
         
         echo json_encode([
             'success' => true,
@@ -170,7 +170,7 @@ try {
     }
     
 } catch (Exception $e) {
-    error_log("✗ Erreur paiement: " . $e->getMessage());
+    error_log("âœ— Erreur paiement: " . $e->getMessage());
     
     http_response_code(400);
     echo json_encode([
@@ -179,3 +179,4 @@ try {
     ]);
 }
 ?>
+

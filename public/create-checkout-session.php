@@ -1,17 +1,17 @@
-<?php
+﻿<?php
 /**
  * create-checkout-session.php
  * 
- * API pour créer une Session de Paiement Stripe
- * Retourne l'URL de redirection vers le paiement sécurisé
+ * API pour crÃ©er une Session de Paiement Stripe
+ * Retourne l'URL de redirection vers le paiement sÃ©curisÃ©
  * 
- * Les données de carte NE PASSENT JAMAIS par ce serveur
- * Stripe s'occupe du paiement de manière sécurisée (PCI-DSS)
+ * Les donnÃ©es de carte NE PASSENT JAMAIS par ce serveur
+ * Stripe s'occupe du paiement de maniÃ¨re sÃ©curisÃ©e (PCI-DSS)
  */
 
-require_once __DIR__ . '/app/bootstrap.php';
+require_once __DIR__ . '/../app/bootstrap.php';
 
-// Valider la requête
+// Valider la requÃªte
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Content-Type: application/json');
     http_response_code(405);
@@ -25,20 +25,20 @@ if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
     die(json_encode(['error' => 'Invalid CSRF token']));
 }
 
-// Vérifier qu'il y a un panier
+// VÃ©rifier qu'il y a un panier
 if (empty($_SESSION['panier'])) {
     header('Content-Type: application/json');
     http_response_code(400);
     die(json_encode(['error' => 'Panier vide']));
 }
 
-// Vérifier que Stripe est configuré
+// VÃ©rifier que Stripe est configurÃ©
 if (empty(STRIPE_SECRET_KEY)) {
-    error_log("Info paiement: STRIPE_SECRET_KEY absente, utilisation du mode démo sécurisé");
+    error_log("Info paiement: STRIPE_SECRET_KEY absente, utilisation du mode dÃ©mo sÃ©curisÃ©");
 }
 
 try {
-    // Charger la librairie Stripe (si installée via Composer)
+    // Charger la librairie Stripe (si installÃ©e via Composer)
     // require_once __DIR__ . '/vendor/autoload.php';
     
     // ====================================================
@@ -53,7 +53,7 @@ try {
             continue;
         }
         
-        // Récupérer les infos du produit
+        // RÃ©cupÃ©rer les infos du produit
         $stmt = $pdo->prepare("SELECT id, nom, prix FROM catalogue_funeraire WHERE id = ? LIMIT 1");
         $stmt->execute([(int)$id]);
         $produit = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -84,11 +84,11 @@ try {
     }
     
     // ====================================================
-    // MODE DÉMO (Sans Stripe réelle)
+    // MODE DÃ‰MO (Sans Stripe rÃ©elle)
     // ====================================================
-    // En production, décommenter le code Stripe réel ci-dessous
+    // En production, dÃ©commenter le code Stripe rÃ©el ci-dessous
     
-    // Générer un identifiant de paiement unique
+    // GÃ©nÃ©rer un identifiant de paiement unique
     $payment_id = 'pay_' . uniqid();
     $_SESSION['pending_payment'] = [
         'id' => $payment_id,
@@ -105,7 +105,7 @@ try {
     
     /*
     // ====================================================
-    // CODE STRIPE RÉEL (décommenter en production)
+    // CODE STRIPE RÃ‰EL (dÃ©commenter en production)
     // ====================================================
     
     \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
@@ -129,11 +129,12 @@ try {
     */
     
 } catch (Exception $e) {
-    error_log("❌ Erreur création session paiement: " . $e->getMessage() . " | " . $e->getFile() . ":" . $e->getLine());
+    error_log("âŒ Erreur crÃ©ation session paiement: " . $e->getMessage() . " | " . $e->getFile() . ":" . $e->getLine());
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'error' => 'Erreur lors de la création de la session de paiement: ' . $e->getMessage()
+        'error' => 'Erreur lors de la crÃ©ation de la session de paiement: ' . $e->getMessage()
     ]);
 }
 ?>
+

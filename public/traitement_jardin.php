@@ -1,5 +1,5 @@
-<?php
-require_once __DIR__ . '/app/bootstrap.php';
+﻿<?php
+require_once __DIR__ . '/../app/bootstrap.php';
 require_once __DIR__ . '/app/Models/GardenModel.php';
 require_once __DIR__ . '/app/Controllers/GardenController.php';
 

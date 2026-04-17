@@ -17,18 +17,18 @@ Créer une plateforme e-commerce permettant :
 
 Si tu veux modifier une **page visible** :
 
-- 1) Entrée HTTP à la racine (`index.php`, `catalogue.php`, `contact.php`, etc.)
+- 1) Entrée HTTP dans `public/` (`public/index.php`, `public/catalogue.php`, `public/contact.php`, etc.)
 - 2) Rendu HTML dans `app/Views/pages/`
 - 3) Logique dans `app/Controllers/`
 - 4) Requêtes SQL / données dans `app/Models/`
 
 Si tu veux modifier la **sécurité / config** :
 
-- `config.php`, `helpers.php`, `constantes.php`, `app/bootstrap.php`
+- `app/Config/config.local.php`, `app/Config/helpers.php`, `app/Config/constantes.php`, `app/bootstrap.php`
 
 Si tu veux modifier les **styles et scripts** :
 
-- `style.css`, `script.js`, `images/`
+- `public/style.css`, `public/script.js`, `public/images/`
 
 Si tu veux lire les **livrables / audits** :
 
@@ -67,6 +67,7 @@ Si tu veux lancer des **outils locaux** :
 - **Séparation des responsabilités** : logique métier, présentation, données
 - **MVC simplifié** : fichiers dédiés pour chaque fonctionnalité
 - **DRY (Don't Repeat Yourself)** : réutilisation du `config.php` et fonctions communes
+- **DRY (Don't Repeat Yourself)** : réutilisation de `app/Config/config.local.php` et des fonctions communes
 - **PRG Pattern (Post/Redirect/Get)** : évite les doublons de données
 
 ### 3. **Bonnes Pratiques PHP**
@@ -99,16 +100,19 @@ Si tu veux lancer des **outils locaux** :
 la_derniere_demeure/
 │
 ├── 🌐 Entrées publiques (front-controllers)
-│   ├── index.php
-│   ├── catalogue.php
-│   ├── panier.php
-│   ├── login.php / logout.php
-│   ├── admin.php / gestion.php / modifier.php / supprimer.php
-│   ├── contact.php / foret.php / ceremonies.php / repos_des_fideles.php
-│   └── payment-form.php / payment-success.php / create-checkout-session.php
+│   └── public/
+│       ├── index.php
+│       ├── catalogue.php
+│       ├── panier.php
+│       ├── login.php / logout.php
+│       ├── admin.php / gestion.php / modifier.php / supprimer.php
+│       ├── contact.php / foret.php / ceremonies.php / repos_des_fideles.php
+│       ├── payment-form.php / payment-success.php / create-checkout-session.php
+│       └── assets: style.css, script.js, images/
 │
 ├── 🧠 MVC (app/)
 │   ├── app/bootstrap.php
+│   ├── app/Config/config.local.php
 │   ├── app/Config/             ⚙️ Constantes et helpers internes
 │   ├── app/Controllers/        🎛️ Contrôleurs
 │   ├── app/Models/             🗃️ Modèles
@@ -116,7 +120,7 @@ la_derniere_demeure/
 │   └── app/Views/partials/     🧩 Partiels réutilisables (footer)
 │
 ├── ⚙️ Configuration et utilitaires runtime
-│   ├── config.php (point d'entrée config local)
+│   └── config.local.php (config locale ignorée par git)
 │   ├── update_stock.php / ajouter_panier.php / traitement_jardin.php
 │   └── process-payment.php / traitement_paiement.php
 
@@ -124,8 +128,7 @@ la_derniere_demeure/
 │   └── database/DATABASE_SETUP.sql
 │
 ├── 🎨 Assets
-│   ├── style.css / script.js
-│   └── images/
+│   └── public/style.css / public/script.js / public/images/
 │
 ├── 📚 Documentation projet
 │   ├── README.md               📖 Point d'entrée principal

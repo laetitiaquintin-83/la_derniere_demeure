@@ -4,11 +4,11 @@ Objectif: comprendre ou modifier le projet sans se perdre.
 
 ## 1) Ou toucher selon le besoin
 
-- Page visible (UI): app/Views/pages/
+- Page visible (UI): public/ pour les entrées, app/Views/pages/ pour les templates
 - Logique de page: app/Controllers/
 - Acces base de donnees: app/Models/
-- Point d'entree URL: fichiers .php a la racine (index.php, catalogue.php, etc.)
-- Configuration et securite: config.php, app/Config/, app/bootstrap.php
+- Point d'entree URL: fichiers .php dans public/ (index.php, catalogue.php, etc.)
+- Configuration et securite: app/Config/config.local.php, app/Config/, app/bootstrap.php
 - Partiels de vue (footer, etc.): app/Views/partials/
 - Assets: style.css, script.js, images/
 - Script SQL: database/DATABASE_SETUP.sql
@@ -32,7 +32,7 @@ Objectif: comprendre ou modifier le projet sans se perdre.
 
 ## 4) Regles de rangement
 
-- Garder les URL publiques a la racine (pas de casse des liens)
+- Garder les URL publiques accessibles via la racine, servies depuis public/ avec rewrite
 - Mettre le HTML de page dans app/Views/pages/
 - Eviter la logique SQL dans les vues
 - Ranger les rapports et livrables uniquement dans docs/
