@@ -4,6 +4,12 @@ require_once 'config.php';
 
 $erreur = "";
 
+// Si l'admin est deja connecte, eviter toute ambiguite
+if (!empty($_SESSION['admin_connecte']) && $_SESSION['admin_connecte'] === true) {
+    header('Location: admin.php');
+    exit;
+}
+
 // Si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
@@ -23,33 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // SÉCURITÉ: Récupération sécurisée du mot de passe saisi
     $username = trim($_POST['username'] ?? 'admin');
     $mdp_saisi = $_POST['mot_de_passe'] ?? '';
+
+    if ($mdp_saisi === '') {
+        $erreur = "Le mot de passe est obligatoire.";
+    } else {
     
     // 2. Vérifier les credentials en base de données (SÉCURITÉ MAXIMALE)
-    try {
-        $stmt = $pdo->prepare("SELECT id, password_hash FROM admin_users WHERE username = ? LIMIT 1");
-        $stmt->execute([$username]);
-        $result = $stmt->fetch();
-        
-        if ($result && password_verify($mdp_saisi, $result['password_hash'])) {
-            // ✓ Connexion réussie: réinitialiser le rate limit
-            reset_rate_limit('login_admin');
+        try {
+            $stmt = $pdo->prepare("SELECT id, password_hash FROM admin_users WHERE username = ? LIMIT 1");
+            $stmt->execute([$username]);
+            $result = $stmt->fetch();
             
-            // Protection contre la fixation de session
-            session_regenerate_id(true);
+            if ($result && password_verify($mdp_saisi, $result['password_hash'])) {
+                // ✓ Connexion réussie: réinitialiser le rate limit
+                reset_rate_limit('login_admin');
+                
+                // Protection contre la fixation de session
+                session_regenerate_id(true);
 
-            // Le mot de passe est bon, on donne la clé d'accès
-            $_SESSION['admin_connecte'] = true;
-            log_audit_event('LOGIN_SUCCESS', 'admin_auth', (int)($result['id'] ?? 0), null, ['username' => $username]);
-            
-            // On redirige vers le registre
-            header('Location: admin.php');
-            exit;
-        } else {
-            // Intentionnellement vague pour éviter user enumeration
-            $erreur = "Accès refusé. Sceau incorrect.";
+                // Le mot de passe est bon, on donne la clé d'accès
+                $_SESSION['admin_connecte'] = true;
+                log_audit_event('LOGIN_SUCCESS', 'admin_auth', (int)($result['id'] ?? 0), null, ['username' => $username]);
+                
+                // On redirige vers le registre
+                header('Location: admin.php');
+                exit;
+            } else {
+                // Intentionnellement vague pour éviter user enumeration
+                $erreur = "Accès refusé. Sceau incorrect.";
+            }
+        } catch (PDOException $e) {
+            $erreur = "Erreur système. Veuillez réessayer.";
         }
-    } catch (PDOException $e) {
-        $erreur = "Erreur système. Veuillez réessayer.";
     }
 }
 ?>

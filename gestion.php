@@ -77,6 +77,17 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
             background: rgba(100, 150, 200, 0.6) !important;
             box-shadow: 0 0 10px rgba(100, 150, 200, 0.4);
         }
+        .logout-inline { margin-left: 15px; }
+        .logout-inline form { margin: 0; }
+        .logout-inline button {
+            background: transparent;
+            border: none;
+            color: #d9534f;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            padding: 0;
+            font-size: inherit;
+        }
     </style>
 </head>
 <body class="admin-body">
@@ -88,7 +99,12 @@ $produits = $query->fetchAll(PDO::FETCH_ASSOC);
             <a href="admin.php">◆ Registre</a>
             <a href="gestion.php" class="active">✦ Inventaire</a>
             <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
-            <a href="logout.php" style="color: #d9534f; margin-left: 15px;">◇ Quitter</a>
+            <span class="logout-inline">
+                <form method="POST" action="logout.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
+                    <button type="submit">◇ Quitter</button>
+                </form>
+            </span>
         </nav>
     </header>
 

@@ -140,6 +140,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
         .admin-nav nav { display: flex; align-items: center; padding: 20px 5%; background: #000; border-bottom: 1px solid var(--gold); }
         .admin-nav a { color: #fff; text-decoration: none; margin-right: 25px; font-family: 'Cinzel', serif; font-size: 0.9rem; transition: color 0.3s; }
         .admin-nav a:hover, .admin-nav a.active { color: var(--gold); }
+        .logout-inline { margin-left: 0; }
+        .logout-inline form { margin: 0; }
+        .logout-inline button {
+            background: transparent;
+            border: none;
+            color: #ff4c4c;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0;
+        }
         .admin-container { max-width: 900px; margin: 40px auto; background: var(--panel-bg); padding: 40px; border: 1px solid #222; }
         .admin-title { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; font-size: 2rem; margin-bottom: 30px; text-transform: uppercase; }
         .error-box { background: rgba(255, 76, 76, 0.15); border: 1px solid #ff4c4c; color: #ff4c4c; padding: 15px; margin-bottom: 25px; text-align: center; }
@@ -181,7 +192,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_article'])) {
             <a href="admin.php" class="active">◆ Registre</a>
             <a href="gestion.php">✦ Inventaire</a>
             <a href="panier.php" style="margin-left: auto;">✵ L'Offrande (<?php echo $nombre_articles; ?>)</a>
-            <a href="logout.php" style="color: #ff4c4c;">◇ Quitter</a>
+            <span class="logout-inline">
+                <form method="POST" action="logout.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(genererTokenCSRF()); ?>">
+                    <button type="submit">◇ Quitter</button>
+                </form>
+            </span>
         </nav>
     </header>
 
