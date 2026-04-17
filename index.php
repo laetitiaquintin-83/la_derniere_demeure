@@ -82,6 +82,16 @@ $titres_poetiques = [
             transform: scale(1.3) rotate(-8deg);
             filter: drop-shadow(0 0 24px rgba(212, 175, 55, 0.7));
         }
+        .admin-entry {
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(212, 175, 55, 0.08);
+        }
+        .admin-entry:hover {
+            background: rgba(212, 175, 55, 0.16);
+            border-color: rgba(212, 175, 55, 0.7);
+        }
         .logo-nav { 
             width: 68px; 
             filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.5));
@@ -105,6 +115,18 @@ $titres_poetiques = [
             position: relative; margin-top: 0;
             width: 100%;
             overflow: hidden;
+            background-size: 108%;
+            animation: heroPan 24s ease-in-out infinite alternate;
+        }
+        @keyframes heroPan {
+            0% {
+                background-position: 48% 52%;
+                background-size: 106%;
+            }
+            100% {
+                background-position: 52% 48%;
+                background-size: 111%;
+            }
         }
         .hero::before {
             content: '';
@@ -492,6 +514,17 @@ $titres_poetiques = [
                 order: -1;
             }
         }
+        @media (prefers-reduced-motion: reduce) {
+            .hero,
+            .hero::after,
+            .title-bottom,
+            .tagline-gold,
+            .logo-nav,
+            .forest-image-container img,
+            .firefly {
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -506,6 +539,11 @@ $titres_poetiques = [
         <div style="display:flex; gap:25px;">
             <a href="repos_des_fideles.php" class="nav-link"><span>✤</span> Repos des Fidèles</a>
             <a href="contact.php" class="nav-link"><span>❋</span> Conciergerie</a>
+            <?php if (!empty($_SESSION['admin_connecte'])): ?>
+                <a href="admin.php" class="nav-link admin-entry"><span>✦</span> Admin</a>
+            <?php else: ?>
+                <a href="login.php" class="nav-link admin-entry"><span>✦</span> Entrer</a>
+            <?php endif; ?>
             <a href="panier.php" class="nav-link">✵ Offrande (<?php echo $nombre_articles; ?>)</a>
         </div>
     </nav>
