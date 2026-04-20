@@ -23,6 +23,8 @@ class AdminDashboardController
             if (!isset($_POST['csrf_token']) || !validerTokenCSRF($_POST['csrf_token'])) {
                 $message = 'Erreur de sécurité : le sceau CSRF est invalide.';
                 $messageType = 'error';
+            } elseif (isset($_POST['moderation_reco_action'])) {
+                [$message, $messageType] = $this->handleRecommandationModeration();
             } elseif (isset($_POST['moderation_action'])) {
                 [$message, $messageType] = $this->handleModeration();
             } elseif (isset($_POST['ajouter_article'])) {
@@ -36,6 +38,7 @@ class AdminDashboardController
             'csrf_token' => genererTokenCSRF(),
             'nombre_articles' => isset($_SESSION['panier']) ? array_sum($_SESSION['panier']) : 0,
             'attente' => $this->model->getPendingAnimalMessages(),
+            'attente_recommandations' => $this->model->getPendingRecommandations(),
         ];
     }
 
@@ -64,6 +67,31 @@ class AdminDashboardController
         return ['Action de modération inconnue.', 'error'];
     }
 
+    private function handleRecommandationModeration(): array
+    {
+        $recommandationId = $_POST['recommandation_id'] ?? '';
+
+        if (!ctype_digit((string) $recommandationId)) {
+            return ['Identifiant de recommandation invalide.', 'error'];
+        }
+
+        $recommandationId = (int) $recommandationId;
+
+        if ($_POST['moderation_reco_action'] === 'approve') {
+            $this->model->approveRecommandation($recommandationId);
+            log_audit_event('APPROVE', 'recommandations_confiance', $recommandationId, null, ['approuve' => 1]);
+            return ['Le temoignage a ete valide dans le Livre de Confiance.', 'success'];
+        }
+
+        if ($_POST['moderation_reco_action'] === 'delete') {
+            $oldRecommandation = $this->model->deleteRecommandation($recommandationId);
+            log_audit_event('DELETE', 'recommandations_confiance', $recommandationId, $oldRecommandation, null);
+            return ['Le temoignage a ete retire du registre.', 'error'];
+        }
+
+        return ['Action de modération inconnue.', 'error'];
+    }
+
     private function handleAddArticle(): array
     {
         $nom = trim($_POST['nom'] ?? '');
@@ -80,7 +108,7 @@ class AdminDashboardController
             return ['Erreur : une image est requise.', 'error'];
         }
 
-        $targetDir = __DIR__ . '/../../images/catalogue/';
+        $targetDir = CATALOGUE_DIR;
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
@@ -92,9 +120,10 @@ class AdminDashboardController
 
         $fileName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $validation['extension'];
         $targetFile = 'images/catalogue/' . $fileName;
-        $realPath = realpath($targetDir) . DIRECTORY_SEPARATOR . $fileName;
+        $realPath = rtrim($targetDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $fileName;
+        $normalizedTargetDir = realpath($targetDir) ?: $targetDir;
 
-        if (strpos($realPath, realpath($targetDir)) !== 0) {
+        if (strpos(realpath(dirname($realPath)) ?: $normalizedTargetDir, $normalizedTargetDir) !== 0) {
             return ['Erreur de sécurité : Chemin invalide (tentative de traversée répertoire).', 'error'];
         }
 

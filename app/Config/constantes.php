@@ -7,7 +7,7 @@
 // ==========================================
 define('BASE_URL', 'http://localhost/la_derniere_demeure/');
 define('PROJECT_ROOT', dirname(__DIR__, 2));
-define('IMAGES_DIR', PROJECT_ROOT . '/images/');
+define('IMAGES_DIR', PROJECT_ROOT . '/public/images/');
 define('UPLOADS_DIR', IMAGES_DIR . 'souvenirs/');
 define('CATALOGUE_DIR', IMAGES_DIR . 'catalogue/');
 

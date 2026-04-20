@@ -10,16 +10,9 @@
 
 require_once __DIR__ . '/../../../app/bootstrap.php';
 
-$payment_id = $_GET['payment_id'] ?? null;
-
-// Valider l'ID de paiement
-if (!$payment_id || !isset($_SESSION['pending_payment']) || $_SESSION['pending_payment']['id'] !== $payment_id) {
-    header('Location: /panier.php');
-    exit;
-}
-
-$payment = $_SESSION['pending_payment'];
-$montant = number_format($payment['amount'], 2, ',', ' ');
+$paymentFormController = new PaymentFormController();
+$data = $paymentFormController->view();
+extract($data, EXTR_SKIP);
 ?>
 <?php require __DIR__ . '/../../../app/Views/pages/payment-form.php'; ?>
 

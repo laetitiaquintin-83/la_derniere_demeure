@@ -41,6 +41,11 @@
             </div>
 
             <div class="form-group">
+                <label>Stock</label>
+                <input type="number" name="stock" min="0" step="1" value="<?php echo (int) $produit['stock']; ?>" required>
+            </div>
+
+            <div class="form-group">
                 <label>Épitaphe (Description)</label>
                 <textarea name="description" rows="4"><?php echo htmlspecialchars($produit['description']); ?></textarea>
             </div>

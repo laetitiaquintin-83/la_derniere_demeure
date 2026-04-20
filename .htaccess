@@ -1,4 +1,8 @@
 ﻿RewriteEngine On
+Options -Indexes
+
+# Racine du site
+RewriteRule ^$ public/pages/client/index.php [L]
 
 # Pages publiques
 RewriteRule ^index\.php$ public/pages/client/index.php [L]
@@ -8,6 +12,7 @@ RewriteRule ^contact\.php$ public/pages/client/contact.php [L]
 RewriteRule ^foret\.php$ public/pages/client/foret.php [L]
 RewriteRule ^ceremonies\.php$ public/pages/client/ceremonies.php [L]
 RewriteRule ^repos_des_fideles\.php$ public/pages/client/repos_des_fideles.php [L]
+RewriteRule ^recommandations\.php$ public/pages/client/recommandations.php [L]
 RewriteRule ^login\.php$ public/pages/admin/login.php [L]
 RewriteRule ^logout\.php$ public/pages/admin/logout.php [L]
 RewriteRule ^admin\.php$ public/pages/admin/admin.php [L]

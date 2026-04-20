@@ -111,6 +111,7 @@
             <a href="catalogue.php">✿ Le Catalogue</a>
             <a href="foret.php">✾ Le Sanctuaire</a>
             <a href="ceremonies.php">❦ L'Art de l'Adieu</a>
+            <a href="recommandations.php">✧ Livre de Confiance</a>
             <a href="contact.php" class="active" style="color: #D4AF37;">❋ Conciergerie</a>
             <a href="panier.php" style="margin-left: auto;">✵ L'Offrande <span id="cart-counter"><?php echo $nombre_articles; ?></span></a>
             <?php if(isset($_SESSION['user_id'])): ?>

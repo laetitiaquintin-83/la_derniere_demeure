@@ -504,6 +504,7 @@
         <img src="images/logo.png" class="logo-nav" alt="Logo">
         <div style="display:flex; gap:25px;">
             <a href="repos_des_fideles.php" class="nav-link"><span>✤</span> Repos des Fidèles</a>
+            <a href="recommandations.php" class="nav-link"><span>✧</span> Livre de Confiance</a>
             <a href="contact.php" class="nav-link"><span>❋</span> Conciergerie</a>
             <?php if (!empty($_SESSION['admin_connecte'])): ?>
                 <a href="admin.php" class="nav-link admin-entry"><span>✦</span> Admin</a>
@@ -600,6 +601,7 @@
             <div class="footer-col">
                 <h4>Informations</h4>
                 <ul>
+                    <li><a href="recommandations.php">Livre de Confiance</a></li>
                     <li><a href="contact.php">Nous contacter</a></li>
                     <li><a href="mentions-legales.php">Mentions Légales</a></li>
                     <li><a href="cgv.php">Conditions de vente</a></li>

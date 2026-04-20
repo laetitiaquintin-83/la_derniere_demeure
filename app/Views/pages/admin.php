@@ -173,6 +173,41 @@
             <?php endforeach; 
         endif; ?>
     </div>
+
+    <div class="admin-container">
+        <h2 class="admin-title" style="font-size: 1.5rem;">Modération du Livre de Confiance</h2>
+
+        <?php if (empty($attente_recommandations)): ?>
+            <p style="text-align: center; color: #666;">Aucun nouveau temoignage en attente.</p>
+        <?php else:
+            foreach ($attente_recommandations as $r): ?>
+                <div class="message-card" style="display: block;">
+                    <div style="display:flex; justify-content: space-between; gap: 14px; align-items: center; margin-bottom: 8px;">
+                        <strong style="color: var(--gold);"><?php echo htmlspecialchars($r['nom']); ?></strong>
+                        <span style="font-size: 0.82rem; color: #8bbf8b;"><?php echo htmlspecialchars($r['service']); ?></span>
+                    </div>
+                    <p style="margin: 0 0 12px 0; font-size: 0.92rem; line-height: 1.6; color: #ddd;">"<?php echo nl2br(htmlspecialchars($r['message'])); ?>"</p>
+                    <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
+                        <span style="font-size: 0.78rem; color: #888;">Soumis le <?php echo htmlspecialchars(date('d/m/Y H:i', strtotime((string) $r['created_at']))); ?></span>
+                        <div style="display: flex; gap: 10px;">
+                            <form method="POST" style="margin:0;">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                                <input type="hidden" name="recommandation_id" value="<?php echo (int) $r['id']; ?>">
+                                <input type="hidden" name="moderation_reco_action" value="approve">
+                                <button type="submit" style="background:none;border:none;color:#4ade80;text-decoration:none;font-weight:bold;cursor:pointer;padding:0;">[ VALIDER ]</button>
+                            </form>
+                            <form method="POST" style="margin:0;" onsubmit="return confirm('Supprimer ce temoignage ?')">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                                <input type="hidden" name="recommandation_id" value="<?php echo (int) $r['id']; ?>">
+                                <input type="hidden" name="moderation_reco_action" value="delete">
+                                <button type="submit" style="background:none;border:none;color:#ff4c4c;text-decoration:none;cursor:pointer;padding:0;">[ SUPPRIMER ]</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach;
+        endif; ?>
+    </div>
 </body>
 </html>
 
